@@ -1,0 +1,363 @@
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=, initial-scale=1.0" />
+        <link rel="stylesheet" href="../components/heades.css" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+            />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+            rel="stylesheet"
+            />
+        <link rel="stylesheet" href="style.css" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+        <title>Gestión UTL | Prestamos</title>
+        <style>
+            .filter-section {
+                background-color: #f8f9fa;
+                border-radius: 8px;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+        </style>
+    </head>
+
+    <body>
+        <header class="topnav d-flex align-items-center justify-content-between shadow-sm px-4">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn border-0 p-1" id="menu-toggle"><i class="bi bi-list fs-4"></i></button>
+                <div class="d-flex align-items-center gap-2">
+                    <img src="../assets/img/logo_sito_app.png" alt="Logo" style="width: 35px" />
+                    <div class="lh-1 d-none d-sm-block">
+                        <h6 class="mb-0 fw-bold">UTL</h6>
+                        <small class="text-black-50" style="font-size: 0.7rem">Sistema de Gestión</small>
+                    </div>
+                </div>
+            </div>
+            <div class="search-box mx-auto" style="max-width: 400px; flex-grow: 1">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Buscar..." class="w-100" />
+            </div>
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <div class="text-end d-none d-md-block">
+                    <p class="mb-0 fw-semibold small text-truncate" id="userNameDisplay">Usuario</p>
+                    <p class="mb-0 text-black-50 small text-truncate" id="userRoleDisplay">Rol</p>
+                </div>
+                <div class="user-avatar" onclick="cerrarSesion()" style="cursor:pointer;"><i class="bi bi-person-fill text-white"></i></div>
+            </div>
+        </header>
+
+        <div class="sidebar shadow-lg">
+            <nav class="nav nav-pills flex-column flex-grow-1">
+                <a class="nav-link" href="dashboard.html">
+                    <i class="bi bi-grid-fill"></i> Dashboard
+                </a>
+                <a class="nav-link" href="inventario.html">
+                    <i class="bi bi-box-seam-fill"></i> Inventario
+                </a>
+                <a class="nav-link" href="prestamos.html">
+                    <i class="bi bi-collection-fill"></i> Prestamos
+                </a>
+                <a class="nav-link" href="reservaciones.html">
+                    <i class="bi bi-calendar-event-fill"></i> Reservaciones
+                </a>
+                <a class="nav-link" href="reportes.html">
+                    <i class="bi bi-file-earmark-text-fill"></i> Reportes
+                </a>
+                <a class="nav-link" href="salones.html">
+                    <i class="bi bi-door-open-fill"></i> Salones
+                </a>
+            </nav>
+        </div>
+
+        <!-- CONETNEDOR FLEXIBLE -->
+        <div id="page-content-wrapper" class="p-5 mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div class="d-flex flex-column">
+                    <h1 class="fw-bold mb-0">Prestamos</h1>
+                    <small class="text-secondary">Estado actual de todos los recursos prestados en la division</small>
+                </div>
+                <button class="btn text-white px-4 py-2" style="background-color: #2a2155; border-color: #2a2155;" data-bs-toggle="modal" 
+                        data-bs-target="#modalNuevoPrestamo">
+                    <i class="bi bi-plus-circle me-2"></i>Nuevo Prestamo
+                </button>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-sm-6 col-lg-3 d-flex">
+                    <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
+                        <p class=" text-secondary small fw-semibold mb-1">
+                            Total Prestamos
+                        </p>
+                        <h3 class="fw-bold mb-0 mt-auto text-primary d-flex justify-content-between align-items-center">
+                            <span id="cardTotal">0</span>
+                            <i class="bi bi-box-seam text-primary fs-5"></i>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3 d-flex">
+                    <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
+                        <p class=" text-secondary small fw-semibold mb-1">
+                            En Uso
+                        </p>
+                        <h3 class="fw-bold mb-0 mt-auto text-warning d-flex justify-content-between align-items-center">
+                            <span id="cardEnUso">0</span>
+                            <i class="bi bi-clock text-warning fs-5"></i>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3 d-flex">
+                    <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
+                        <p class="text-secondary small fw-semibold mb-1">
+                            Disponibles
+                        </p>
+                        <h3 class="fw-bold mb-0 mt-auto text-success d-flex justify-content-between align-items-center">
+                            <span id="cardDisponibles">0</span>
+                            <i class="bi bi-check-circle text-success fs-5"></i>
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3 d-flex">
+                    <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
+                        <p class=" text-secondary small fw-semibold mb-1">
+                            Atrasados
+                        </p>
+                        <h3 class="fw-bold mb-0 mt-auto text-danger d-flex justify-content-between align-items-center">
+                            <span id="cardAtrasados">0</span>
+                            <i class="bi bi-exclamation-circle text-danger fs-5"></i>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILTROS -->
+            <div class="filter-section">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold small">Prestamo</label>
+                        <select class="form-select form-select-sm" id="filtroMaterial">
+                            <option value="">Todos los prestamos</option>
+                            <option value="Edificio D">Edificio D</option>
+                            <option value="Edificio E">Edificio E</option>
+                            <option value="Edificio F">Edificio F</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold small">Categoría</label>
+                        <select class="form-select form-select-sm" id="filtroCategoria">
+                            <option value="">Todos</option>
+                            <option value="Salón">Salón</option>
+                            <option value="Laboratorio">Laboratorio</option>
+                            <option value="Sala">Sala</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold small">Estado</label>
+                        <select class="form-select form-select-sm" id="filtroEstatus">
+                            <option value="">Todos</option>
+                            <option value="menor30">0 < 30</option>
+                            <option value="entre3060">30 < 60</option>
+                            <option value="emtre60100">60 < 100</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button class="btn text-white btn-sm w-100" style="background-color: #2a2155; border-color: #2a2155;" id="btnFiltrar">
+                            <i class="bi bi-funnel"></i> Filtrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLA Inventario General -->
+            <div class="bg-white p-3 rounded-3 border">
+                <div class="table-responsive">
+                    <!-- TABLA Inventario General -->
+                    <div class="bg-white p-3 rounded-3 border">
+                        <div class="table-responsive">
+                            <table id="tablaPrestamo" class="table table-hover align-middle mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="fw-bold text-dark">Matricula</th>
+                                        <th class="fw-bold text-dark">Mobiliario</th>
+                                        <th class="fw-bold text-dark">Fecha Salida</th>
+                                        <th class="fw-bold text-dark">Fecha Devolucion</th>
+                                        <th class="fw-bold text-dark">Estado</th>
+                                        <th class="fw-bold text-dark">Observaciones</th>
+                                        <th class="fw-bold text-dark">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Se llena dinámicamente -->
+                                </tbody>
+                            </table>
+                            <div class="modal fade" id="modalDetalleInventario" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header text-white" style="background-color: #2a2155;">
+                                            <h5 class="modal-title">Detalles del Material</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body" id="modalDetalleBody">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>  
+
+        <!-- Modal nuevo material -->
+        <div class="modal fade" id="modalNuevoPrestamo" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header text-white" style="background-color: #2a2155;">
+                        <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Registrar Nuevo Préstamo</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form id="formNuevoPrestamo">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Matrícula del Usuario*</label>
+                                    <input type="text" id="newMatricula" class="form-control" placeholder="Ej: 2024ADM01" required>
+                                    <small class="text-muted">El usuario debe estar registrado previamente.</small>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">ID Mobiliario / Inventario*</label>
+                                    <input type="text" id="newIdInventario" class="form-control" placeholder="Ej: MOB001" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Fecha de Devolución Prevista*</label>
+                                    <input type="datetime-local" id="newFechaPrevista" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Estatus Inicial</label>
+                                    <select id="newEstatus" class="form-select" disabled>
+                                        <option value="Activo" selected>Activo</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Observaciones de Salida</label>
+                                    <textarea id="newObsSalida" class="form-control" rows="3" placeholder="Estado del mueble al entregarse..."></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn text-white" style="background-color: #2a2155;" onclick="guardarNuevoPrestamo()">
+                            <i class="bi bi-save me-1"></i> Registrar Préstamo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL EDITAR -->
+        <div class="modal fade" id="modalEditarPrestamo" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header text-white" style="background-color: #2a2155;">
+                        <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Actualizar Préstamo</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form id="formEditarPrestamo">
+                            <input type="hidden" id="editPrestamoId">
+
+                            <div class="mb-3">
+                                <h6 class="border-bottom pb-2" style="color:#2a2155; font-weight: 700;">CONFIGURACIÓN DE RETORNO</h6>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="editEstatus" class="form-label fw-bold">Estatus del Préstamo</label>
+                                <select id="editEstatus" class="form-select">
+                                    <option value="Activo">Activo</option>
+                                    <option value="Devuelto">Devuelto</option>
+                                    <option value="Atrasado">Atrasado</option>
+                                    <option value="Extraviado">Extraviado</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="editObservacionesEntrada" class="form-label fw-bold">Observaciones de Entrega</label>
+                                <textarea id="editObservacionesEntrada" class="form-control" rows="3" placeholder="Ej: Se entrega con rayaduras menores o en buen estado..."></textarea>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn text-white" style="background-color: #2a2155;" onclick="guardarCambiosPrestamo()">
+                            <i class="bi bi-save me-1"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- MODAL DETALLES -->
+        <div class="modal fade" id="modalDetallePrestamo" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header text-white" style="background-color: #2a2155;">
+                        <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>Detalles del Préstamo #<span id="det-id-prestamo"></span></h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <h6 class="border-bottom pb-2" style="color:#2a2155;font-weight: bold;">Datos del Usuario</h6>
+                                <p><strong>Nombre:</strong> <span id="det-nombre"></span></p>
+                                <p><strong>Matrícula:</strong> <span id="det-matricula"></span></p>
+                                <p><strong>Rol:</strong> <span id="det-rol"></span></p>
+                                <p><strong>Turno:</strong> <span id="det-turno"></span></p>
+                                <p><strong>Contacto:</strong> <span id="det-correo"></span> / <span id="det-telefono"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="border-bottom pb-2" style="color:#2a2155;font-weight: bold;">Información del Préstamo</h6>
+                                <p><strong>ID Mobiliario:</strong> <span id="det-mobiliario"></span></p>
+                                <p><strong>Estatus:</strong> <span id="det-estatus" class="badge"></span></p>
+                                <p><strong>Salida:</strong> <span id="det-fecha-salida"></span></p>
+                                <p><strong>Devolución Prevista:</strong> <span id="det-fecha-prevista"></span></p>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <h6 class="border-bottom pb-2" style="color:#2a2155;font-weight: bold;">Observaciones</h6>
+                                <div class="p-2 bg-light rounded">
+                                    <p><strong>Salida:</strong> <span id="det-obs-salida"></span></p>
+                                    <p><strong>Entrada / Reporte:</strong> <span id="det-obs-entrada"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="../main.js"></script>
+        <script src="js/prestamos.js"></script>
+    </body>
+</html>

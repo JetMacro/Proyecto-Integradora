@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="login.css" />
+    <title>Gestión UTL - Login</title>
+  </head>
+  <body>
+      
+    <div class="container">
+      <img
+        src="assets/img/logo_sito_app.png"
+        alt="Logo UTL"
+        class="main-logo"
+      />
+      <h3>Gestión UTL</h3>
+      <p class="subtitle">Login</p>
+
+      <div class="content">
+        <form class="form" action="">
+          <div class="input-field">
+            <div class="input-wrapper">
+              <img
+                  src="assets/img/usuario.png"
+                alt="User Icon"
+                class="field-png"
+              />
+              <input
+                type="text"
+                required
+                autocomplete="off"
+                name="usuario"
+                id="username"
+              />
+              <label for="username">Usuario / Matrícula</label>
+            </div>
+          </div>
+
+          <div class="input-field">
+            <div class="input-wrapper">
+              <img
+                src="assets/img/contrasena (1).png"
+                alt="Pass Icon"
+                class="field-png"
+              />
+              <input
+                type="password"
+                required
+                autocomplete="off"
+                name="password"
+                id="password"
+              />
+              <label for="password">Contraseña</label>
+            </div>
+          </div>
+
+          <div class="btn-container">
+
+
+            <button type="submit" class="btn">Iniciar Sesión</button>
+          </div>
+
+          <a href="/">¿Olvidaste tu contraseña?</a>
+        </form>
+      </div>
+
+      <p class="footer-tag">© UTL 2026</p>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>

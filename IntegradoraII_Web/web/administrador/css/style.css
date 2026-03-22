@@ -1,0 +1,84 @@
+/* =========================================
+   ESTRUCTURA PRINCIPAL (LAYOUT)
+   ========================================= */
+
+/* Barra Superior */
+.topnav {
+  height: 85px; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1030;
+  background-color: #ffffff;
+}
+
+/* Menú Lateral (Sidebar) */
+.sidebar {
+  width: 260px;
+  position: fixed;
+  top: 85px; /* Empieza justo debajo del header */
+  left: 0;
+  height: calc(100vh - 85px);
+  background-color: #ffffff;
+  z-index: 1020;
+  overflow-y: auto;
+}
+
+/* Espacio principal de contenido */
+#page-content-wrapper {
+  margin-left: 260px; /* Deja el espacio del sidebar a la izquierda */
+  padding-top: 100px !important; /* Compensa la barra superior fija */
+  min-height: 100vh;
+}
+
+/* =========================================
+   ESTILOS DE COMPONENTES
+   ========================================= */
+
+/* Botones del menú lateral */
+.sidebar .nav-pills .nav-link {
+  border-radius: 10px;
+  margin: 4px 16px;
+  color: #475569;
+  font-weight: 500;
+  padding: 12px 16px;
+}
+
+.sidebar .nav-pills .nav-link.active {
+  background-color: #2a2155 !important;
+  color: #ffffff !important;
+}
+
+/* Caja de Búsqueda */
+.search-box {
+  background: #f1f3f4;
+  border-radius: 8px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-box input {
+  background: transparent;
+  outline: none;
+  border: none;
+  color: #5f6368;
+}
+
+/* Icono del Administrador (Cuadrado con bordes redondeados y degradado) */
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(145deg, #444fc2 0%, #2a2155 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.user-avatar i {
+  font-size: 1.3rem;
+}

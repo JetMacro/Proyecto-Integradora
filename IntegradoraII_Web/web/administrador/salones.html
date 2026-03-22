@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=, initial-scale=1.0" />
+        <link rel="stylesheet" href="../components/heades.css" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+            />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+            rel="stylesheet"
+            />
+        <link rel="stylesheet" href="style.css" />
+
+        <title>Salones | Gestión UTL</title>
+        <style>
+            .filter-section {
+                background-color: #f8f9fa;
+                border-radius: 8px;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+        </style>
+    </head>
+
+    <body>
+        <header class="topnav d-flex align-items-center justify-content-between shadow-sm px-4">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn border-0 p-1" id="menu-toggle"><i class="bi bi-list fs-4"></i></button>
+                <div class="d-flex align-items-center gap-2">
+                    <img src="../assets/img/logo_sito_app.png" alt="Logo" style="width: 35px" />
+                    <div class="lh-1 d-none d-sm-block">
+                        <h6 class="mb-0 fw-bold">UTL</h6>
+                        <small class="text-black-50" style="font-size: 0.7rem">Sistema de Gestión</small>
+                    </div>
+                </div>
+            </div>
+            <div class="search-box mx-auto" style="max-width: 400px; flex-grow: 1">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Buscar..." class="w-100" />
+            </div>
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <div class="text-end d-none d-md-block">
+                    <p class="mb-0 fw-semibold small text-truncate" id="userNameDisplay">Usuario</p>
+                    <p class="mb-0 text-black-50 small text-truncate" id="userRoleDisplay">Rol</p>
+                </div>
+                <div class="user-avatar" onclick="cerrarSesion()" style="cursor:pointer;"><i class="bi bi-person-fill text-white"></i></div>
+            </div>
+        </header>
+        
+        <div class="sidebar shadow-lg">
+            <nav class="nav nav-pills flex-column flex-grow-1">
+                <a class="nav-link" href="dashboard.html">
+                    <i class="bi bi-grid-fill"></i> Dashboard
+                </a>
+                <a class="nav-link" href="inventario.html">
+                    <i class="bi bi-box-seam-fill"></i> Inventario
+                </a>
+                <a class="nav-link" href="prestamos.html">
+                    <i class="bi bi-collection-fill"></i> Prestamos
+                </a>
+                <a class="nav-link" href="reservaciones.html">
+                    <i class="bi bi-calendar-event-fill"></i> Reservaciones
+                </a>
+                <a class="nav-link" href="reportes.html">
+                    <i class="bi bi-file-earmark-text-fill"></i> Reportes
+                </a>
+                <a class="nav-link" href="salones.html">
+                    <i class="bi bi-door-open-fill"></i> Salones
+                </a>
+            </nav>
+        </div>
+
+        <!-- CONTENEDOR FLEXIBLE -->
+        <div id="page-content-wrapper" class="p-5 mt-5">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                <div>
+                    <h1 class="fw-bold mb-0">Salones</h1>
+                    <small class="text-secondary">Listado actual de espacios académicos</small>
+                </div>
+                <button class="btn text-white px-4 py-2" style="background-color: #2a2155; border-color: #2a2155;" onclick="abrirModalAgregar()">
+                    <i class="bi bi-plus-circle"></i> Agregar Salón
+                </button>
+            </div>
+
+            <!-- Tarjetas resumen-->
+            <div class="row g-4 mb-4">
+                <div class="col-sm-6 col-lg-3 d-flex">
+                    <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
+                        <p class="text-secondary small fw-semibold mb-1">Salones Activos</p>
+                        <h3 class="fw-bold mb-0 mt-auto text-success d-flex justify-content-between align-items-center">
+                            <span>0</span>
+                            <i class="bi bi-check-circle text-success fs-5"></i>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3 d-flex">
+                    <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
+                        <p class="text-secondary small fw-semibold mb-1">Salones Inactivos</p>
+                        <h3 class="fw-bold mb-0 mt-auto text-secondary d-flex justify-content-between align-items-center">
+                            <span>0</span>
+                            <i class="bi bi-pause-circle text-secondary fs-5"></i>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3 d-flex">
+                    <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
+                        <p class="text-secondary small fw-semibold mb-1">Salones Eliminados</p>
+                        <h3 class="fw-bold mb-0 mt-auto text-danger d-flex justify-content-between align-items-center">
+                            <span>0</span>
+                            <i class="bi bi-x-circle text-danger fs-5"></i>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3 d-flex">
+                    <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
+                        <p class="text-secondary small fw-semibold mb-1">Total Salones</p>
+                        <h3 class="fw-bold mb-0 mt-auto text-primary d-flex justify-content-between align-items-center">
+                            <span>0</span>
+                            <i class="bi bi-building text-primary fs-5"></i>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILTROS -->
+            <div class="filter-section">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold small">Edificio</label>
+                        <select class="form-select form-select-sm" id="filtroEdificio">
+                            <option value="">Todos los edificios</option>
+                            <option value="Edificio D">Edificio D</option>
+                            <option value="Edificio E">Edificio E</option>
+                            <option value="Edificio F">Edificio F</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold small">Tipo</label>
+                        <select class="form-select form-select-sm" id="filtroTipo">
+                            <option value="">Todos</option>
+                            <option value="Salón">Salón</option>
+                            <option value="Laboratorio">Laboratorio</option>
+                            <option value="Sala">Sala</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold small">Estatus</label>
+                        <select class="form-select form-select-sm" id="filtroEstatus">
+                            <option value="">Todos</option>
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                            <option value="Eliminado">Eliminado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button class="btn text-white btn-sm w-100" style="background-color: #2a2155; border-color: #2a2155;" id="btnFiltrar">
+                            <i class="bi bi-funnel"></i> Filtrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-3 rounded-3 border">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="fw-bold text-dark">Nombre</th>
+                                <th class="fw-bold text-dark">Tipo</th>
+                                <th class="fw-bold text-dark">Capacidad</th>
+                                <th class="fw-bold text-dark">Edificio</th>
+                                <th class="fw-bold text-dark">Estatus</th>
+                                <th class="fw-bold text-dark">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL UNIFICADO PARA AGREGAR/EDITAR SALÓN (Estilo Reservaciones) -->
+        <div class="modal fade" id="modalSalon" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="modalSalonTitulo">
+                            <i class="bi bi-plus-circle"></i> Agregar Salón
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formSalon">
+                            <input type="hidden" id="salonId">
+
+                            <div class="form-floating mb-3">
+                                <select class="form-select" id="salonIdEdificio" required>
+                                    <option value="" selected disabled>Seleccione edificio</option>
+                                    <option value="1">Edificio D</option>
+                                    <option value="2">Edificio E</option>
+                                    <option value="3">Edificio F</option>
+                                </select>
+                                <label for="salonIdEdificio">Edificio</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <select class="form-select" id="salonTipo" required>
+                                    <option value="" selected disabled>Seleccione tipo</option>
+                                    <option value="Salon">Salón</option>
+                                    <option value="Laboratorio">Laboratorio</option>
+                                    <option value="Sala">Sala</option>
+                                </select>
+                                <label for="salonTipo">Tipo</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="salonNombre" placeholder="Nombre del salón" required>
+                                <label for="salonNombre">Nombre del Salón</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="salonCapacidad" placeholder="Capacidad" min="1" required>
+                                <label for="salonCapacidad">Capacidad (personas)</label>
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                <select class="form-select" id="salonEstatus">
+                                    <option value="Activo">Activo</option>
+                                    <option value="Inactivo">Inactivo</option>
+                                    <option value="Eliminado">Eliminado</option>
+                                </select>
+                                <label for="salonEstatus">Estatus</label>
+                            </div>
+
+                            <button type="button" class="btn text-white w-100 py-2" id="btnGuardarSalon" style="background-color: #2a2155; border-color: #2a2155;" onclick="guardarSalon()">
+                                <i class="bi bi-save"></i> Guardar Salón
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE DETALLES DEL SALÓN -->
+        <div class="modal fade" id="modalDetalleSalon" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #2a2155;">
+                        <h5 class="modal-title text-white" id="modalDetalleTitulo">
+                            <i class="bi bi-info-circle"></i> Detalles del Salón
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body" id="modalDetalleBody">
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p>Cargando detalles...</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="../main.js"></script>
+        <script src="js/salones.js"></script>
+
+    </body>
+</html>

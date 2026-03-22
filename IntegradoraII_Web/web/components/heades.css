@@ -1,0 +1,138 @@
+/* --- CONFIGURACIÓN GENERAL --- */
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* --- HEADER (TOPNAV) --- */
+.topnav {
+  background-color: #ffffff;
+  height: 80px;
+  padding: 0 1.5rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* --- ESTRUCTURA PRINCIPAL (#wrapper) --- */
+#wrapper {
+  display: flex;
+  margin-top: 80px;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+  width: 280px;
+  height: calc(100vh - 80px);
+  background-color: #ffffff;
+  position: fixed;
+  left: 0;
+  top: 80px;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+  padding: 1.5rem;
+  border-right: 1px solid #edf2f7;
+  overflow-y: auto;
+}
+
+/* --- CONTENIDO PRINCIPAL --- */
+#page-content-wrapper {
+  flex: 1;
+  margin-left: 280px;
+  padding: 2rem;
+  transition: all 0.3s ease-in-out;
+  min-height: calc(100vh - 80px);
+}
+
+/* --- LÓGICA DEL TOGGLE (Ocultar Menú) --- */
+body.sb-hidden .sidebar {
+  transform: translateX(-280px);
+}
+
+body.sb-hidden #page-content-wrapper {
+  margin-left: 0;
+}
+
+/* --- COMPONENTES DEL HEADER --- */
+
+/* Buscador centrado */
+.search-box {
+  background-color: #f1f3f5;
+  border-radius: 12px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: border 0.2s;
+  border: 1px solid transparent;
+}
+
+.search-box:focus-within {
+  border-color: #4e59f8;
+  background-color: #ffffff;
+}
+
+.search-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.user-avatar {
+  background: linear-gradient(135deg, #4e59f8, #251c46);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* --- NAVEGACIÓN (Sidebar) --- */
+.nav-pills .nav-link {
+  color: #4a5568;
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.nav-pills .nav-link:hover {
+  background-color: #f7fafc;
+  color: #251c46;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #251c46 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(37, 28, 70, 0.2);
+}
+
+/* --- RESPONSIVIDAD --- */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-280px);
+  }
+  #page-content-wrapper {
+    margin-left: 0;
+  }
+  body.sb-hidden .sidebar {
+    transform: translateX(0);
+  }
+  .search-box {
+    display: none; /* Oculta el buscador en móviles para ahorrar espacio */
+  }
+}

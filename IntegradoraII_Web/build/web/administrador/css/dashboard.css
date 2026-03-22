@@ -1,0 +1,54 @@
+.card-acceso {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: #ffffff; /* Fondo blanco puro */
+}
+
+/* Efecto Hover: se levanta un poco */
+.card-acceso:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    cursor: pointer;
+}
+
+/* Estilo de la caja del icono */
+.icon-box {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+/* Colores personalizados (Fondo suave + Texto fuerte) */
+/* Verde */
+.bg-success-light { background-color: #d1e7dd; }
+.text-success { color: #198754!important; }
+
+/* Morado */
+.bg-purple-light { background-color: #e0cffc; }
+.text-purple { color: #6f42c1; }
+
+/* Naranja */
+.bg-orange-light { background-color: #ffe5d0; }
+.text-orange { color: #fd7e14; }
+
+/* Rosa */
+.bg-pink-light { background-color: #fad0c4; }
+.text-pink { color: #e83e8c; }
+
+
+/* Color de borde muy suave para separar los items */
+.border-bottom-light {
+    border-bottom: 1px solid #f8f9fa; 
+}
+
+/* Efecto al pasar el mouse por cada actividad */
+.list-group-item {
+    transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa; /* Se pone gris muy clarito */
+    cursor: default; /* Mantiene el cursor normal */
+}
