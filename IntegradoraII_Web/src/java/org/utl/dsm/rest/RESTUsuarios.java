@@ -21,8 +21,15 @@ public class RESTUsuarios {
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(Usuarios ul) {
+    public Response login(String jsonEntrada) {
         try {
+            // 1. Recibimos un String y Gson se encarga de convertirlo, evitando el error 500 de Tomcat
+            Gson gson = new Gson();
+            Usuarios ul = gson.fromJson(jsonEntrada, Usuarios.class);
+
+            System.out.println("LLEGÓ A JAVA -> Matrícula: " + ul.getMatricula() + " | Pass: " + ul.getContrasenia());
+
+            // 2. Ejecutamos la base de datos
             ControllerUsuarios ctrl = new ControllerUsuarios();
             Usuarios u = ctrl.login(ul.getMatricula(), ul.getContrasenia());
 
@@ -31,13 +38,13 @@ public class RESTUsuarios {
                         .entity("{\"error\":\"Credenciales incorrectas\"}").build();
             }
 
-            Gson gson = new Gson();
+            // 3. Regresamos el resultado convertido a texto
             String jsonRespuesta = gson.toJson(u);
             return Response.status(Response.Status.OK).entity(jsonRespuesta).build();
             
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(500).entity("{\"error\":\"" + e.getMessage() + "\"}").build();
+            return Response.status(500).entity("{\"error\":\"Error interno: " + e.getMessage() + "\"}").build();
         }
     }
 
@@ -65,8 +72,11 @@ public class RESTUsuarios {
     @Path("insertar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertar(Usuarios u) {
+    public Response insertar(String jsonEntrada) {
         try {
+            Gson gson = new Gson();
+            Usuarios u = gson.fromJson(jsonEntrada, Usuarios.class);
+
             ControllerUsuarios ctrl = new ControllerUsuarios();
             ctrl.insertar(u);
 
@@ -86,8 +96,11 @@ public class RESTUsuarios {
     @Path("modificar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response modificar(Usuarios u) {
+    public Response modificar(String jsonEntrada) {
         try {
+            Gson gson = new Gson();
+            Usuarios u = gson.fromJson(jsonEntrada, Usuarios.class);
+
             ControllerUsuarios ctrl = new ControllerUsuarios();
             ctrl.modificar(u);
 
