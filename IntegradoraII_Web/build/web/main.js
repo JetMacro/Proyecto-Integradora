@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const response = await fetch("https://proyecto-integradora-production.up.railway.app/api/usuario/login", {
+            const response = await fetch("/api/usuario/login", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 // AQUÍ ESTÁ LA MAGIA: Cambiamos para que envíe "matricula" en lugar de "nombreUsuario"
@@ -49,6 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     contrasenia: contrasenia
                 })
             });
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: "Error interno del servidor" }));
+                alert(errorData.error || "Credenciales incorrectas.");
+                return;
+            }
 
             // aqui inicia la modificacion Mau
             const data = await response.json();
@@ -80,12 +86,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Agregado token
-const PATH_INICIO = window.location.origin + "/IntegradoraII_Web/index.html";
+const PATH_INICIO = window.location.origin + "/index.html";
 
 // token agregado
 function verificarSesion() {
     const path = window.location.pathname;
-    if (path.endsWith("index.html") || path === "/IntegradoraII_Web/")
+    if (path.endsWith("index.html") || path === "/" || path === "") return;
         return;
 
     const token = localStorage.getItem("sessionToken");
