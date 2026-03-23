@@ -43,8 +43,12 @@ public class RESTUsuarios {
             return Response.status(Response.Status.OK).entity(jsonRespuesta).build();
             
         } catch (Exception e) {
+            // Imprimimos el error forzosamente en la consola de Railway
+            System.out.println("ERROR CRÍTICO EN JAVA: " + e.getMessage());
             e.printStackTrace();
-            return Response.status(500).entity("{\"error\":\"Error interno: " + e.getMessage() + "\"}").build();
+            
+            // Cambiamos el status a 400 para que Tomcat no sobreescriba nuestro JSON
+            return Response.status(400).entity("{\"error\":\"" + e.getMessage() + "\"}").build();
         }
     }
 
