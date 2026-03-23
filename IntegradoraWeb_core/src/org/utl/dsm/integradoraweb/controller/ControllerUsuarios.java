@@ -38,7 +38,7 @@ public class ControllerUsuarios {
                         
                         //u.setToken(rs.getString("token")); 
                         //u.setLast_used_token(rs.getString("last_used_token"));
-                        System.out.println("Login exitoso en Java para: " + u.getMatricula());
+                        
                     }
                 }
             }
