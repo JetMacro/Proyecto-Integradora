@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
 
     if (toggleButton) {
-        const icon = toggleButton.querySelector("i");
         toggleButton.addEventListener("click", (e) => {
             e.preventDefault();
             body.classList.toggle("sb-hidden");
@@ -18,10 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // -------- Validación de login --------
+    // -------- Lógica de Login --------
     const form = document.querySelector(".form");
-    if (!form)
-        return; // Evita errores si no encuentra el formulario.
+    if (!form) return; 
 
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
@@ -29,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // Obtenemos los valores de los inputs.
         const nombreUsuario = usernameInput.value.trim();
         const contrasenia = passwordInput.value.trim();
 
@@ -39,58 +36,52 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
+            // RUTA RELATIVA: Funciona en localhost y en Railway por igual
             const response = await fetch("/api/usuario/login", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                // AQUÍ ESTÁ LA MAGIA: Cambiamos para que envíe "matricula" en lugar de "nombreUsuario"
-                // para que coincida exactamente con tu modelo de Java.
                 body: JSON.stringify({
                     matricula: nombreUsuario,
                     contrasenia: contrasenia
                 })
             });
-            
+
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: "Error interno del servidor" }));
-                alert(errorData.error || "Credenciales incorrectas.");
+                const errorData = await response.json().catch(() => ({ error: "Credenciales incorrectas o error en servidor" }));
+                alert(errorData.error || "Error al iniciar sesión.");
                 return;
             }
 
-            // aqui inicia la modificacion Mau
             const data = await response.json();
 
-            if (response.ok) {
-                console.log("Usuario autenticado:", data);
+            // Guardar datos de sesión
+            localStorage.setItem("id_usuario", data.id_usuario);
+            localStorage.setItem("id_rol", data.id_rol);
+            localStorage.setItem("nombre_usuario", `${data.nombre} ${data.apellido_paterno}`);
+            localStorage.setItem("matricula", data.matricula);
 
-                // esto me permite guardar los datos en el local storage
-                localStorage.setItem("id_usuario", data.id_usuario);
-                localStorage.setItem("id_rol", data.id_rol);
-                localStorage.setItem("nombre_usuario", `${data.nombre} ${data.apellido_paterno}`);
-                localStorage.setItem("matricula", data.matricula);
+            // Generar Token
+            const prefijo = data.matricula.trim().toUpperCase().substring(0, 3).replace("A", "@");
+            const tokenInicial = (prefijo + "-" + Date.now().toString()).padEnd(25, "X");
+            localStorage.setItem("sessionToken", tokenInicial);
 
-                //  TOKEN
-                const prefijo = data.matricula.trim().toUpperCase().substring(0, 3).replace("A", "@");
-                const tokenInicial = (prefijo + "-" + Date.now().toString()).padEnd(25, "X");
-                localStorage.setItem("sessionToken", tokenInicial);
-
-                window.location.href = "administrador/dashboard.html";
-            } else {
-                alert(data.error || "Credenciales incorrectas.");
-            }
+            // REDIRECCIÓN CRÍTICA: Sin el nombre del proyecto
+            window.location.href = "administrador/dashboard.html";
 
         } catch (error) {
-            console.error("Error al conectarse al servidor:", error);
-            alert("No se pudo conectar al servidor. Intenta más tarde.");
+            console.error("Error:", error);
+            alert("Error de conexión con el servidor.");
         }
     });
 });
 
-// Agregado token
+// CONFIGURACIÓN DE RUTAS PARA RAILWAY
 const PATH_INICIO = window.location.origin + "/index.html";
 
-// token agregado
 function verificarSesion() {
     const path = window.location.pathname;
+    
+    // Si estamos en el login, no verificamos sesión
     if (path.endsWith("index.html") || path === "/" || path === "") return;
 
     const token = localStorage.getItem("sessionToken");
@@ -99,6 +90,7 @@ function verificarSesion() {
         return;
     }
 
+    // Validación de tiempo del token (10 min)
     const partes = token.split("-");
     if (partes.length > 1) {
         const timestampToken = parseInt(partes[1]);
@@ -114,7 +106,7 @@ function verificarSesion() {
 
 window.addEventListener("load", verificarSesion);
 
-// Refrescar token
+// Refrescar token al hacer clic
 document.addEventListener("click", () => {
     const tokenActual = localStorage.getItem("sessionToken");
     if (tokenActual) {
@@ -125,5 +117,4 @@ document.addEventListener("click", () => {
     }
 });
 
-// Verificación en segundo plano
 setInterval(verificarSesion, 5000);

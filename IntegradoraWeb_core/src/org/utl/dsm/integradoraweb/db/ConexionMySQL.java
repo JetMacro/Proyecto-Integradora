@@ -9,17 +9,13 @@ public class ConexionMySQL {
     private Connection conn;
 
     public Connection open() {
-        // Datos de autenticación de tu instancia de Railway
+        // 1. Datos de acceso (los mismos que ya tienes)
         String user = "root";
         String password = "GIzvEZkDlYwpINLdXtxwzfmPdWWfRcDw";
         
-        /**
-         * CONFIGURACIÓN PARA RAILWAY:
-         * 1. allowPublicKeyRetrieval=true: Permite que el driver de MySQL obtenga la llave del servidor.
-         * 2. useSSL=false: Desactiva SSL para evitar errores de certificados en el entorno de pruebas.
-         * 3. serverTimezone=UTC: Evita errores de desfase de horario entre el servidor de Railway y la BD.
-         */
-        String url = "jdbc:mysql://centerbeam.proxy.rlwy.net:18338/railway"
+        // 2. URL INTERNA: Cambiamos el host a 'mysql.railway.internal' 
+        // y el puerto al estándar interno '3306'
+        String url = "jdbc:mysql://mysql.railway.internal:3306/railway"
                    + "?useUnicode=true"
                    + "&characterEncoding=utf-8"
                    + "&useSSL=false"
@@ -27,17 +23,20 @@ public class ConexionMySQL {
                    + "&serverTimezone=UTC";
 
         try {
-            // Cargamos el driver de MySQL 8
+            // 3. Cargamos el driver
             Class.forName("com.mysql.cj.jdbc.Driver");
+            
+            // 4. Intentamos la conexión
             conn = DriverManager.getConnection(url, user, password);
-            System.out.println("Conexión exitosa a Railway MySQL");
+            System.out.println(">>> CONEXIÓN EXITOSA A MYSQL (INTERNA) <<<");
             return conn;
+            
         } catch (ClassNotFoundException e) {
-            System.err.println("Error: No se encontró el Driver de MySQL.");
+            System.err.println("ERROR: No se encontró el conector de MySQL.");
             e.printStackTrace();
             throw new RuntimeException(e);
         } catch (SQLException e) {
-            System.err.println("Error: No se pudo conectar a la base de datos.");
+            System.err.println("ERROR: Falló la conexión a la base de datos.");
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -50,7 +49,6 @@ public class ConexionMySQL {
                 System.out.println("Conexión cerrada.");
             } catch (SQLException e) {
                 e.printStackTrace();
-                System.out.println("Excepción al cerrar la conexión.");
             }
         }
     }
