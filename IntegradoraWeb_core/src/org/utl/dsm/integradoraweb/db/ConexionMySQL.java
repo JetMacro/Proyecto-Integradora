@@ -9,12 +9,16 @@ public class ConexionMySQL {
     private Connection conn;
 
     public Connection open() {
-        // 1. Datos de acceso (los mismos que ya tienes)
+        // Datos de autenticación (Variables de tu Railway)
         String user = "root";
         String password = "GIzvEZkDlYwpINLdXtxwzfmPdWWfRcDw";
         
-        // 2. URL INTERNA: Cambiamos el host a 'mysql.railway.internal' 
-        // y el puerto al estándar interno '3306'
+        /**
+         * CONFIGURACIÓN INTERNA PARA RAILWAY:
+         * Host: mysql.railway.internal (MYSQLHOST)
+         * Puerto: 3306 (MYSQLPORT interno)
+         * BD: railway (MYSQLDATABASE)
+         */
         String url = "jdbc:mysql://mysql.railway.internal:3306/railway"
                    + "?useUnicode=true"
                    + "&characterEncoding=utf-8"
@@ -23,20 +27,20 @@ public class ConexionMySQL {
                    + "&serverTimezone=UTC";
 
         try {
-            // 3. Cargamos el driver
+            // Cargamos el driver de MySQL 8
             Class.forName("com.mysql.cj.jdbc.Driver");
             
-            // 4. Intentamos la conexión
+            // Intentamos la conexión a la red privada de Railway
             conn = DriverManager.getConnection(url, user, password);
-            System.out.println(">>> CONEXIÓN EXITOSA A MYSQL (INTERNA) <<<");
+            System.out.println(">>> CONEXIÓN EXITOSA A LA RED INTERNA DE RAILWAY <<<");
             return conn;
             
         } catch (ClassNotFoundException e) {
-            System.err.println("ERROR: No se encontró el conector de MySQL.");
+            System.err.println("ERROR: No se encontró el Driver de MySQL.");
             e.printStackTrace();
             throw new RuntimeException(e);
         } catch (SQLException e) {
-            System.err.println("ERROR: Falló la conexión a la base de datos.");
+            System.err.println("ERROR: Falló la conexión interna a la base de datos.");
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -46,7 +50,7 @@ public class ConexionMySQL {
         if (conn != null) {
             try {
                 conn.close();
-                System.out.println("Conexión cerrada.");
+                System.out.println("Conexión cerrada correctamente.");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
