@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/IntegradoraII_Web/api';
+const API_URL = 'https://proyecto-integradora-production.up.railway.app/api';
 
 let todosLosUsuarios = [];
 

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const URL_BASE = "http://localhost:8080/IntegradoraII_Web/api/reservacion";
+    const URL_BASE = "https://proyecto-integradora-production.up.railway.app/api/reservacion";
 
     let reservaciones = [];
     let salonesBD = [];

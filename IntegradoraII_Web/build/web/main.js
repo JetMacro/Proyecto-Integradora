@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8080/IntegradoraII_Web/api/usuario/login", {
+            const response = await fetch("https://proyecto-integradora-production.up.railway.app/api/usuario/login", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 // AQUÍ ESTÁ LA MAGIA: Cambiamos para que envíe "matricula" en lugar de "nombreUsuario"

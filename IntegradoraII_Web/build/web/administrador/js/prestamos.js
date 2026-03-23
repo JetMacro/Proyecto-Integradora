@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const tableBody = document.querySelector("#tablaPrestamo tbody");
-    const apiUrl = "http://localhost:8080/IntegradoraII_Web/api/prestamos/getAll";
+    const apiUrl = "https://proyecto-integradora-production.up.railway.app/api/prestamos/getAll";
 
     // --- 1. FUNCIÓN DE CARGA DE TABLA ---
     window.fetchPrestamo = async function () {
@@ -199,7 +199,7 @@ window.eliminarItem = async (id) => {
     if (result.isConfirmed) {
         try {
             console.log("Enviando petición al servidor...");
-            const response = await fetch(`http://localhost:8080/IntegradoraII_Web/api/prestamos/delete`, {
+            const response = await fetch(`https://proyecto-integradora-production.up.railway.app/api/prestamos/delete`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({id_prestamo: parseInt(id)}) // Enviamos el ID que llegó por parámetro
@@ -273,7 +273,7 @@ window.guardarCambiosPrestamo = async function () {
 
     try {
         Swal.showLoading();
-        const response = await fetch(`http://localhost:8080/IntegradoraII_Web/api/prestamos/update`, {
+        const response = await fetch(`https://proyecto-integradora-production.up.railway.app/api/prestamos/update`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(datos)
@@ -314,7 +314,7 @@ window.guardarNuevoPrestamo = async function () {
 
     try {
         Swal.showLoading();
-        const response = await fetch(`http://localhost:8080/IntegradoraII_Web/api/prestamos/insert`, {
+        const response = await fetch(`https://proyecto-integradora-production.up.railway.app/api/prestamos/insert`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(datos)

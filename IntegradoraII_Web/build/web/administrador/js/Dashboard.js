@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function cargarDashboard() {
-    const url = 'http://localhost:8080/IntegradoraII_Web/api/dashboard/resumen';
+    const url = 'https://proyecto-integradora-production.up.railway.app/api/dashboard/resumen';
 
     fetch(url)
         .then(response => {
