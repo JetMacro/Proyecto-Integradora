@@ -92,7 +92,6 @@ const PATH_INICIO = window.location.origin + "/index.html";
 function verificarSesion() {
     const path = window.location.pathname;
     if (path.endsWith("index.html") || path === "/" || path === "") return;
-        return;
 
     const token = localStorage.getItem("sessionToken");
     if (!token) {
