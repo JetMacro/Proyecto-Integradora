@@ -16,7 +16,6 @@ public class ControllerUsuarios {
         ConexionMySQL connMySQL = new ConexionMySQL();
         Usuarios u = null;
 
-        // Uso de try-with-resources para asegurar que la conexión se cierre siempre
         try (Connection conn = connMySQL.open();
              CallableStatement cstmt = conn.prepareCall(sql)) {
 
@@ -37,7 +36,6 @@ public class ControllerUsuarios {
                         u.setApellido_paterno(rs.getString("apellido_paterno"));
                         u.setApellido_materno(rs.getString("apellido_materno"));
                         
-                        // Sincronizado con las nuevas columnas de tu SQL
                         u.setToken(rs.getString("token")); 
                         u.setLast_used_token(rs.getString("last_used_token"));
                         
@@ -49,15 +47,12 @@ public class ControllerUsuarios {
             }
         } catch (SQLException e) {
             System.err.println("Error en el login (Controller): " + e.getMessage());
-            throw e; // Lanza el error para que el REST lo atrape y envíe el 500 con detalle
+            throw e; 
         }
         return u;
     }
 
-    // Asegúrate de que los métodos getAll, insertar, etc., llamen a los nombres 
-    // exactos de tus procedimientos (sp_ConsultarUsuarios, etc.)
     public List<Usuarios> getAll() throws Exception {
-        // Tu SP se llama sp_ConsultarUsuarios según tu script
         String query = "{CALL sp_ConsultarUsuarios()}"; 
         List<Usuarios> listaUsuarios = new ArrayList<>();
         ConexionMySQL connMySQL = new ConexionMySQL();
@@ -85,5 +80,73 @@ public class ControllerUsuarios {
             }
         }
         return listaUsuarios;
+    }
+
+    public void insertar(Usuarios u) throws Exception {
+        // Ajusta el nombre del SP si es diferente en tu BD
+        String query = "{CALL sp_insertar_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        
+        try (Connection conn = connMySQL.open();
+             CallableStatement cstmt = conn.prepareCall(query)) {
+            
+            // Datos de usuario
+            cstmt.setString(1, u.getMatricula());
+            cstmt.setString(2, u.getContrasenia());
+            cstmt.setString(3, u.getId_rol());
+            cstmt.setString(4, u.getId_turno());
+            
+            // Datos de persona
+            cstmt.setString(5, u.getNombre());
+            cstmt.setString(6, u.getApellido_paterno());
+            cstmt.setString(7, u.getApellido_materno());
+            cstmt.setString(8, u.getCorreo());
+            cstmt.setString(9, u.getTelefono());
+            cstmt.setString(10, u.getFecha_nacimiento());
+            cstmt.setString(11, u.getDireccion());
+            cstmt.setString(12, u.getId_estatus());
+            
+            cstmt.executeUpdate();
+        }
+    }
+
+    public void modificar(Usuarios u) throws Exception {
+        // Ajusta el nombre del SP si es diferente en tu BD
+        String query = "{CALL sp_modificar_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        
+        try (Connection conn = connMySQL.open();
+             CallableStatement cstmt = conn.prepareCall(query)) {
+            
+            cstmt.setInt(1, u.getId_usuario());
+            cstmt.setInt(2, u.getId_persona());
+            cstmt.setString(3, u.getMatricula());
+            cstmt.setString(4, u.getContrasenia());
+            cstmt.setString(5, u.getId_rol());
+            cstmt.setString(6, u.getId_turno());
+            cstmt.setString(7, u.getNombre());
+            cstmt.setString(8, u.getApellido_paterno());
+            cstmt.setString(9, u.getApellido_materno());
+            cstmt.setString(10, u.getCorreo());
+            cstmt.setString(11, u.getTelefono());
+            cstmt.setString(12, u.getFecha_nacimiento());
+            cstmt.setString(13, u.getDireccion());
+            cstmt.setString(14, u.getId_estatus());
+            
+            cstmt.executeUpdate();
+        }
+    }
+
+    public void eliminar(int idUsuario) throws Exception {
+        // Ajusta el nombre del SP si es diferente en tu BD
+        String query = "{CALL sp_eliminar_usuario(?)}";
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        
+        try (Connection conn = connMySQL.open();
+             CallableStatement cstmt = conn.prepareCall(query)) {
+            
+            cstmt.setInt(1, idUsuario);
+            cstmt.executeUpdate();
+        }
     }
 }
