@@ -36,8 +36,9 @@ public class ControllerUsuarios {
                         u.setApellido_paterno(rs.getString("apellido_paterno"));
                         u.setApellido_materno(rs.getString("apellido_materno"));
                         
-                        u.setToken(rs.getString("token")); 
-                        u.setLast_used_token(rs.getString("last_used_token"));
+                        //u.setToken(rs.getString("token")); 
+                        //u.setLast_used_token(rs.getString("last_used_token"));
+                        System.out.println("Login exitoso en Java para: " + u.getMatricula());
                     }
                 }
             }
