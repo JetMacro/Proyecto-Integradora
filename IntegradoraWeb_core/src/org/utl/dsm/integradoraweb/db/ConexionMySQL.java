@@ -15,9 +15,7 @@ public class ConexionMySQL {
     // USA ESTA URL EXACTA (Red interna de Railway)
     // Cambiamos el host a 'mysql.railway.internal' y el puerto al estándar '3306'
     String url = "jdbc:mysql://mysql.railway.internal:3306/railway"
-               + "?useUnicode=true"
-               + "&characterEncoding=utf-8"
-               + "&useSSL=false"
+               + "?useSSL=false"
                + "&allowPublicKeyRetrieval=true"
                + "&serverTimezone=UTC";
 
@@ -27,7 +25,7 @@ public class ConexionMySQL {
         return conn;
     } catch (Exception e) {
         e.printStackTrace();
-        throw new RuntimeException("Error al conectar con la BD interna: " + e.getMessage());
+        throw new RuntimeException("ERROR BD: " + e.getMessage());
     }
 }
 
