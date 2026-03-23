@@ -1,6 +1,6 @@
 # Usamos la imagen oficial de Tomcat 10.1 con Java 17
 # Esta versión es la correcta para tu proyecto de Jakarta EE 9.1
-FROM tomcat:10.1-jdk17
+FROM tomcat:10.0-jdk17
 
 # Exponemos el puerto 8080 que es el que Railway busca por defecto
 EXPOSE 8080
