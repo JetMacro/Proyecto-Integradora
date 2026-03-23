@@ -1,14 +1,13 @@
-FROM tomcat:9.0-jdk17-openjdk-slim
+# Cambiamos a Tomcat 10 para soportar Jakarta EE 9.1
+FROM tomcat:10.1-jdk17-openjdk-slim
 
-# Railway usa el puerto 8080 por defecto
+# Exponer el puerto de Railway
 EXPOSE 8080
 
-# Borramos lo que trae Tomcat para que no choque
+# Limpiar aplicaciones base
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copiamos tu archivo WAR. 
-# IMPORTANTE: Asegúrate de que en NetBeans hiciste "Clean and Build" 
-# para que exista la carpeta 'dist' con el archivo .war adentro.
-COPY dist/*.war /usr/local/tomcat/webapps/ROOT.war
+# Copiar tu archivo WAR como ROOT para que cargue al entrar al link
+COPY dist/IntegradoraII_Web.war /usr/local/tomcat/webapps/ROOT.war
 
 CMD ["catalina.sh", "run"]
