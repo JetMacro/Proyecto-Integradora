@@ -172,20 +172,29 @@ function actualizarResumen(datos) {
 }
 
 window.mostrarDetalle = function(id) {
+    // 1. Quita el focus del botón para evitar el error de "aria-hidden" en consola
+    if(document.activeElement) document.activeElement.blur(); 
+
     const r = listaGlobalReportes.find(i => i.id_reporte === id);
     if(r) {
-        document.getElementById('detDescripcion').innerText = r.descripcion;
-        document.getElementById('detFecha').innerText = r.fecha_reporte;
-        document.getElementById('detUsuario').innerText = r.matricula;
+        document.getElementById('detDescripcion').innerText = r.descripcion || "Sin descripción";
+        document.getElementById('detFecha').innerText = r.fecha_reporte || "Sin fecha";
+        document.getElementById('detUsuario').innerText = r.matricula || "N/A";
 
         const imgDetalle = document.getElementById('detFoto');
         
-        if (r.fotoEvidencia && r.fotoEvidencia.length > 10) {
-            imgDetalle.src = r.fotoEvidencia; 
+        // 2. Verificamos si existe la foto y si es una cadena Base64 válida
+        if (r.fotoEvidencia && r.fotoEvidencia.length > 50) { 
+            // Si la foto ya trae el prefijo "data:image", la ponemos directo. 
+            // Si no, se lo agregamos.
+            imgDetalle.src = r.fotoEvidencia.startsWith("data:image") 
+                             ? r.fotoEvidencia 
+                             : "data:image/png;base64," + r.fotoEvidencia;
+            
             imgDetalle.style.display = "inline-block";
         } else {
-            imgDetalle.src = "";
             imgDetalle.style.display = "none";
+            imgDetalle.src = "";
         }
 
         new bootstrap.Modal(document.getElementById('modalDetalles')).show();
