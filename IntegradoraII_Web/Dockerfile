@@ -1,15 +1,16 @@
 # Usamos la imagen oficial de Tomcat 10.1 con Java 17
-# Al no poner el parche específico (.28), Docker bajará la más reciente y estable
-FROM tomcat:10.1-jdk17-slim
+# Esta versión es la correcta para tu proyecto de Jakarta EE 9.1
+FROM tomcat:10.1-jdk17
 
-# Railway usa el puerto 8080
+# Exponemos el puerto 8080 que es el que Railway busca por defecto
 EXPOSE 8080
 
-# Limpiar aplicaciones base para evitar conflictos
+# Eliminamos las aplicaciones que trae Tomcat por defecto para que no causen conflictos
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copiamos tu archivo WAR. 
-# Asegúrate de que la ruta 'dist/IntegradoraII_Web.war' sea correcta en tu repo
+# Copiamos tu archivo WAR desde la carpeta dist de tu GitHub
+# Se renombra a ROOT.war para que tu app sea la página principal
 COPY dist/IntegradoraII_Web.war /usr/local/tomcat/webapps/ROOT.war
 
+# Comando para iniciar el servidor
 CMD ["catalina.sh", "run"]
