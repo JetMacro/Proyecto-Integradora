@@ -1,24 +1,19 @@
 package org.utl.dsm.rest;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.FormParam;
-import java.util.List;
-
 import org.utl.dsm.integradoraweb.controller.ControllerUsuarios;
 import org.utl.dsm.integradoraweb.model.Usuarios;
+import java.util.List;
 
-/**
- *
- * @author rodod
- */
 @Path("usuario")
 public class RESTUsuarios {
 
@@ -27,8 +22,6 @@ public class RESTUsuarios {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(Usuarios ul) {
-        System.out.println("LLEGÓ A JAVA -> Matrícula: " + ul.getMatricula() + " | Pass: " + ul.getContrasenia());
-
         try {
             ControllerUsuarios ctrl = new ControllerUsuarios();
             Usuarios u = ctrl.login(ul.getMatricula(), ul.getContrasenia());
@@ -38,8 +31,9 @@ public class RESTUsuarios {
                         .entity("{\"error\":\"Credenciales incorrectas\"}").build();
             }
 
-            // Devolvemos el objeto "u" directamente. Jersey lo convierte a JSON automáticamente.
-            return Response.ok(u).build();
+            Gson gson = new Gson();
+            String jsonRespuesta = gson.toJson(u);
+            return Response.status(Response.Status.OK).entity(jsonRespuesta).build();
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,8 +49,9 @@ public class RESTUsuarios {
             ControllerUsuarios ctrl = new ControllerUsuarios();
             List<Usuarios> lista = ctrl.getAll();
 
-            // Devolvemos la lista directamente, sin usar Gson
-            return Response.status(Response.Status.OK).entity(lista).build();
+            Gson gson = new Gson();
+            String jsonRespuesta = gson.toJson(lista);
+            return Response.status(Response.Status.OK).entity(jsonRespuesta).build();
 
         } catch (Exception e) {
             e.printStackTrace();

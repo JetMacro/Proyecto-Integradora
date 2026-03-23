@@ -38,16 +38,9 @@ public class ControllerUsuarios {
                         
                         u.setToken(rs.getString("token")); 
                         u.setLast_used_token(rs.getString("last_used_token"));
-                        
-                        System.out.println("Login exitoso en Java para: " + u.getMatricula());
-                    } else {
-                        System.out.println("Login fallido: " + rs.getString("message"));
                     }
                 }
             }
-        } catch (SQLException e) {
-            System.err.println("Error en el login (Controller): " + e.getMessage());
-            throw e; 
         }
         return u;
     }
@@ -83,20 +76,16 @@ public class ControllerUsuarios {
     }
 
     public void insertar(Usuarios u) throws Exception {
-        // Ajusta el nombre del SP si es diferente en tu BD
         String query = "{CALL sp_insertar_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
         ConexionMySQL connMySQL = new ConexionMySQL();
         
         try (Connection conn = connMySQL.open();
              CallableStatement cstmt = conn.prepareCall(query)) {
             
-            // Datos de usuario
             cstmt.setString(1, u.getMatricula());
             cstmt.setString(2, u.getContrasenia());
             cstmt.setString(3, u.getId_rol());
             cstmt.setString(4, u.getId_turno());
-            
-            // Datos de persona
             cstmt.setString(5, u.getNombre());
             cstmt.setString(6, u.getApellido_paterno());
             cstmt.setString(7, u.getApellido_materno());
@@ -111,7 +100,6 @@ public class ControllerUsuarios {
     }
 
     public void modificar(Usuarios u) throws Exception {
-        // Ajusta el nombre del SP si es diferente en tu BD
         String query = "{CALL sp_modificar_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
         ConexionMySQL connMySQL = new ConexionMySQL();
         
@@ -138,7 +126,6 @@ public class ControllerUsuarios {
     }
 
     public void eliminar(int idUsuario) throws Exception {
-        // Ajusta el nombre del SP si es diferente en tu BD
         String query = "{CALL sp_eliminar_usuario(?)}";
         ConexionMySQL connMySQL = new ConexionMySQL();
         
