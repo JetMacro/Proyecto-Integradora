@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             body.classList.toggle("sb-hidden");
         });
-    }
+    } 
 
     const currentPath = window.location.pathname.split("/").pop() || "index.html";
     const links = document.querySelectorAll(".nav-link");
