@@ -9,16 +9,12 @@ public class ConexionMySQL {
     private Connection conn;
 
     public Connection open() {
-        // Leemos las variables directamente desde Railway
-        String host = System.getenv("MYSQLHOST");
-        String port = System.getenv("MYSQLPORT");
-        String dbName = System.getenv("MYSQLDATABASE");
-        String user = System.getenv("MYSQLUSER");
-        String password = System.getenv("MYSQLPASSWORD");
-
-        // Construimos la URL dinámicamente
-        // Si estás en la misma red de Railway, usará mysql.railway.internal:3306 automáticamente
-        String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName 
+        // Datos fijos de tu nueva base de datos en Railway
+        String user = "root";
+        String password = "GIzvEZkDlYwpINLdXtxwzfmPdWWfRcDw";
+        
+        // URL usando la red interna de Railway (más rápida y estable)
+        String url = "jdbc:mysql://mysql.railway.internal:3306/railway"
                    + "?useSSL=false"
                    + "&allowPublicKeyRetrieval=true"
                    + "&serverTimezone=UTC";
@@ -29,8 +25,7 @@ public class ConexionMySQL {
             return conn;
         } catch (Exception e) {
             e.printStackTrace();
-            // Esto ayudará a ver el error real en los Logs de Railway
-            throw new RuntimeException("Error al conectar a la base de datos: " + e.getMessage());
+            throw new RuntimeException("ERROR BD: " + e.getMessage());
         }
     }
 
@@ -38,6 +33,7 @@ public class ConexionMySQL {
         if (conn != null) {
             try {
                 conn.close();
+                System.out.println("Conexión cerrada correctamente.");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
