@@ -9,25 +9,25 @@ public class ConexionMySQL {
     private Connection conn;
 
     public Connection open() {
-        // Datos fijos de tu nueva base de datos en Railway
-        String user = "root";
-        String password = "GIzvEZkDlYwpINLdXtxwzfmPdWWfRcDw";
-        
-        // URL usando la red interna de Railway (más rápida y estable)
-        String url = "jdbc:mysql://mysql.railway.internal:3306/railway"
-                   + "?useSSL=false"
-                   + "&allowPublicKeyRetrieval=true"
-                   + "&serverTimezone=UTC";
+    String user = "root";
+    String password = "eTusLsDcNyOjmffKwSfYVcUBpbacvMKL";
+    
+    // USA ESTA URL EXACTA (Red interna de Railway)
+    // Cambiamos el host a 'mysql.railway.internal' y el puerto al estándar '3306'
+    String url = "jdbc:mysql://mysql.railway.internal:3306/railway"
+               + "?useSSL=false"
+               + "&allowPublicKeyRetrieval=true"
+               + "&serverTimezone=UTC";
 
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(url, user, password);
-            return conn;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("ERROR BD: " + e.getMessage());
-        }
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        conn = DriverManager.getConnection(url, user, password);
+        return conn;
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw new RuntimeException("ERROR BD: " + e.getMessage());
     }
+}
 
     public void close() {
         if (conn != null) {
