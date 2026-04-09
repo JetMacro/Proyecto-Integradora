@@ -186,16 +186,22 @@ window.mostrarDetalle = async function(id) {
             const resp = await fetch(`../api/reporte/getFoto?idReporte=${id}`);
             const data = await resp.json();
             
-            if (data.foto && data.foto.length > 50) {
-                imgDetalle.src = data.foto.startsWith("data:image") 
-                                 ? data.foto 
-                                 : "data:image/png;base64," + data.foto;
+            if (data.foto && data.foto.trim().length > 100) {
+                // Eliminamos posibles saltos de línea que el tipo LONGTEXT de MySQL a veces inserta
+                let base64Pure = data.foto.replace(/\s/g, "");
+                
+                // Solo agregar el prefijo si NO lo tiene
+                imgDetalle.src = base64Pure.startsWith("data:image") 
+                                 ? base64Pure 
+                                 : "data:image/png;base64," + base64Pure;
+                
                 imgDetalle.style.display = "inline-block";
+            } else {
+                imgDetalle.style.display = "none";
             }
         } catch (error) {
             console.error("Error al cargar la foto:", error);
         }
-
         new bootstrap.Modal(document.getElementById('modalDetalles')).show();
     }
 }
