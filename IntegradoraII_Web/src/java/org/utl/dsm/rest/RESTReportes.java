@@ -43,9 +43,9 @@ public class RESTReportes {
     @Path("insertar")
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertar(@FormParam("datos") String datos,
-                             @FormParam("idUsuario") int idU,
-                             @FormParam("idInventario") int idI,
-                             @FormParam("fotoB64") String fotoB64) {
+            @FormParam("idUsuario") int idU,
+            @FormParam("idInventario") int idI,
+            @FormParam("fotoB64") String fotoB64) {
         try {
             Gson gson = new Gson();
             Reporte r = gson.fromJson(datos, Reporte.class);
@@ -60,7 +60,7 @@ public class RESTReportes {
             return Response.ok("{\"res\":\"Éxito\"}").build();
         } catch (Exception e) {
             // Imprimimos el error en la consola del servidor para que puedas ver el detalle real
-            e.printStackTrace(); 
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"error\":\"" + e.getMessage() + "\"}").build();
         }
@@ -74,6 +74,20 @@ public class RESTReportes {
             ControllerReporte cr = new ControllerReporte();
             cr.eliminar(idR);
             return Response.ok("{\"res\":\"Reporte eliminado correctamente\"}").build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\":\"" + e.getMessage() + "\"}").build();
+        }
+    }
+
+    @GET
+    @Path("getFoto")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFoto(@QueryParam("idReporte") int idR) {
+        try {
+            ControllerReporte cr = new ControllerReporte();
+            String foto = cr.getFotoById(idR);
+            return Response.ok("{\"foto\":\"" + foto + "\"}").build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"error\":\"" + e.getMessage() + "\"}").build();
