@@ -36,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            // RUTA RELATIVA: Funciona en localhost y en Railway por igual
             const response = await fetch("/api/usuario/login", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -47,25 +46,23 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: "Credenciales incorrectas o error en servidor" }));
+                const errorData = await response.json().catch(() => ({ error: "Credenciales incorrectas" }));
                 alert(errorData.error || "Error al iniciar sesión.");
                 return;
             }
 
             const data = await response.json();
 
-            // Guardar datos de sesión
             localStorage.setItem("id_usuario", data.id_usuario);
             localStorage.setItem("id_rol", data.id_rol);
             localStorage.setItem("nombre_usuario", `${data.nombre} ${data.apellido_paterno}`);
             localStorage.setItem("matricula", data.matricula);
 
-            // Generar Token
+            // Generar Token con Timestamp inicial
             const prefijo = data.matricula.trim().toUpperCase().substring(0, 3).replace("A", "@");
             const tokenInicial = (prefijo + "-" + Date.now().toString()).padEnd(25, "X");
             localStorage.setItem("sessionToken", tokenInicial);
 
-            // REDIRECCIÓN CRÍTICA: Sin el nombre del proyecto
             window.location.href = "administrador/dashboard.html";
 
         } catch (error) {
@@ -75,13 +72,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// CONFIGURACIÓN DE RUTAS PARA RAILWAY
+// CONFIGURACIÓN DE RUTAS
 const PATH_INICIO = window.location.origin + "/index.html";
 
 function verificarSesion() {
     const path = window.location.pathname;
-    
-    // Si estamos en el login, no verificamos sesión
     if (path.endsWith("index.html") || path === "/" || path === "") return;
 
     const token = localStorage.getItem("sessionToken");
@@ -90,7 +85,6 @@ function verificarSesion() {
         return;
     }
 
-    // Validación de tiempo del token (10 min)
     const partes = token.split("-");
     if (partes.length > 1) {
         const timestampToken = parseInt(partes[1]);
@@ -104,10 +98,8 @@ function verificarSesion() {
     }
 }
 
-window.addEventListener("load", verificarSesion);
-
-// Refrescar token al hacer clic
-document.addEventListener("click", () => {
+// Función centralizada para refrescar el tiempo del token
+function refrescarSesion() {
     const tokenActual = localStorage.getItem("sessionToken");
     if (tokenActual) {
         const mat = localStorage.getItem("matricula") || "USR";
@@ -115,6 +107,16 @@ document.addEventListener("click", () => {
         const nuevoToken = (prefijo + "-" + Date.now().toString()).padEnd(25, "X");
         localStorage.setItem("sessionToken", nuevoToken);
     }
+}
+
+// Escuchar carga de página
+window.addEventListener("load", verificarSesion);
+
+// REQUISITO: Refrescar token con CUALQUIER actividad (No solo clic)
+// Esto evita que la sesión se cierre si el usuario está escribiendo o moviendo el mouse
+["click", "mousemove", "keypress"].forEach(evt => {
+    document.addEventListener(evt, refrescarSesion);
 });
 
-setInterval(verificarSesion, 5000);
+// Verificación automática cada 10 segundos
+setInterval(verificarSesion, 10000);
