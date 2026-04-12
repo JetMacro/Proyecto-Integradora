@@ -164,21 +164,21 @@ public class ControllerUsuarios {
         final String correoOrigen = "yoqzan25@gmail.com";
         final String contraseniaApp = "ujrroquepkrtmsib";
 
-        // Dentro de tu método enviarCorreoRecuperacion
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "465");
 
-// ESTO ES CLAVE PARA SERVIDORES EN LA NUBE
+// ESTO FUERZA LA CONEXIÓN SSL PARA EVITAR EL TIMEOUT
         props.put("mail.smtp.ssl.enable", "true");
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.socketFactory.fallback", "false");
 
-// EVITAR EL TIMEOUT INFINITO
-        props.put("mail.smtp.connectiontimeout", "10000"); // 10 segundos
-        props.put("mail.smtp.timeout", "10000");           // 10 segundos
+// TIEMPOS DE ESPERA PARA EVITAR QUE EL SERVIDOR SE CUELGUE
+        props.put("mail.smtp.connectiontimeout", "10000");
+        props.put("mail.smtp.timeout", "10000");
+        props.put("mail.smtp.writetimeout", "10000");          // 10 segundos
 
         Session session = Session.getInstance(props, new jakarta.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
