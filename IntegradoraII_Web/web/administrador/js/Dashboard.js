@@ -48,8 +48,8 @@ const filaHTML = `
         })
         .catch(error => {
             console.error('Hubo un problema con la petición:', error);
-            if(document.getElementById('total-inventario')) document.getElementById('total-inventario').innerText = "!";
-            if(document.getElementById('total-usuarios')) document.getElementById('total-usuarios').innerText = "!";
+            document.getElementById('total-inventario').innerText = "-";
+            document.getElementById('total-usuarios').innerText = "-";
         });
 }
 
