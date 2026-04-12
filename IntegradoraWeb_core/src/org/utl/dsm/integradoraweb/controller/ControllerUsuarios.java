@@ -164,18 +164,26 @@ public class ControllerUsuarios {
         final String correoOrigen = "yoqzan25@gmail.com";
         final String contraseniaApp = "ujrroquepkrtmsib";
 
+        // Dentro de tu método enviarCorreoRecuperacion
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "465");
-        props.put("mail.smtp.socketFactory.port", "465"); // Requerido para SSL en algunos servidores
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // Forzar SSL
+
+// ESTO ES CLAVE PARA SERVIDORES EN LA NUBE
         props.put("mail.smtp.ssl.enable", "true");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.fallback", "false");
+
+// EVITAR EL TIMEOUT INFINITO
+        props.put("mail.smtp.connectiontimeout", "10000"); // 10 segundos
+        props.put("mail.smtp.timeout", "10000");           // 10 segundos
 
         Session session = Session.getInstance(props, new jakarta.mail.Authenticator() {
-            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(correoOrigen, contraseniaApp);
+                // USA TU CONTRASEÑA DE APLICACIÓN AQUÍ
+                return new PasswordAuthentication("tu_correo@gmail.com", "tu_clave_de_16_letras");
             }
         });
 
@@ -185,7 +193,7 @@ public class ControllerUsuarios {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(correoDestino));
             message.setSubject("Recuperacion de Contrasena - Gestion UTL");
 
-            String enlace = "http://localhost:8080/IntegradoraII_Web/index.html?correo=" + correoDestino + "&reset=true";
+            String enlace = "https://proyecto-integradora-production-f92d.up.railway.app/index.html?correo=" + correoDestino + "&reset=true";
 
             String html = "<div style='font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;'>"
                     + "<h2 style='color: #2a2155; text-align: center;'>Gestion UTL</h2>"
