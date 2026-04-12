@@ -1,10 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.utl.dsm.integradoraweb.controller;
 
-import com.mysql.cj.jdbc.CallableStatement;
+// CORRECCIÓN: Se cambió de com.mysql... a java.sql.CallableStatement
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,10 +10,6 @@ import java.util.List;
 import org.utl.dsm.integradoraweb.db.ConexionMySQL;
 import org.utl.dsm.integradoraweb.model.Salones;
 
-/**
- *
- * @author ruthesmeraldariosgranados
- */
 public class ControllerSalones {
     
     public List<Salones> getAll() throws Exception {
@@ -32,8 +25,8 @@ public class ControllerSalones {
         
         while (rs.next()) {
             Salones s = new Salones();
-             s.setIdSalon(rs.getInt("id_salon")); 
-                 s.setIdEdificio(rs.getInt("id_edificio"));
+            s.setIdSalon(rs.getInt("id_salon")); 
+            s.setIdEdificio(rs.getInt("id_edificio"));
             s.setNombre(rs.getString("nombre"));
             s.setTipo(rs.getString("tipo"));
             s.setCapacidad(rs.getInt("capacidad"));
@@ -51,95 +44,96 @@ public class ControllerSalones {
     }
     
     public String insertarSalon(Salones s) throws Exception {
-    String sql = "{CALL sp_insertar_salon(?, ?, ?, ?, ?)}";
-    String resultado = "";
-    
- ConexionMySQL connMySQL = new ConexionMySQL();
+        String sql = "{CALL sp_insertar_salon(?, ?, ?, ?, ?)}";
+        String resultado = "";
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
         Connection conn = connMySQL.open();
-        java.sql.CallableStatement cstmt = conn.prepareCall(sql);
-    
-    cstmt.setInt(1, s.getIdEdificio());        
-    cstmt.setString(2, s.getTipo());            
-    cstmt.setString(3, s.getNombre());          
-    cstmt.setInt(4, s.getCapacidad());          
-    cstmt.setString(5, s.getEstatus());        
-    
-    boolean hasResults = cstmt.execute();
-    
-    if (hasResults) {
-        ResultSet rs = cstmt.getResultSet();
-        if (rs.next()) {
-            resultado = rs.getString("mensaje");
-            int idGenerado = rs.getInt("id_salon");
-            System.out.println("ID generado: " + idGenerado);
+        CallableStatement cstmt = conn.prepareCall(sql);
+        
+        cstmt.setInt(1, s.getIdEdificio());        
+        cstmt.setString(2, s.getTipo());            
+        cstmt.setString(3, s.getNombre());          
+        cstmt.setInt(4, s.getCapacidad());          
+        cstmt.setString(5, s.getEstatus());        
+        
+        boolean hasResults = cstmt.execute();
+        
+        if (hasResults) {
+            ResultSet rs = cstmt.getResultSet();
+            if (rs.next()) {
+                resultado = rs.getString("mensaje");
+                int idGenerado = rs.getInt("id_salon");
+                System.out.println("ID generado: " + idGenerado);
+            }
+            rs.close();
         }
-        rs.close();
+        
+        cstmt.close();
+        conn.close();
+        
+        return resultado;
     }
-    
-    cstmt.close();
-    conn.close();
-    
-    return resultado;
-}
     
    public String actualizarSalon(Salones s) throws Exception {
-    String sql = "{CALL sp_actualizar_salon(?, ?, ?, ?, ?, ?)}";
-    String resultado = "";
-    
-    ConexionMySQL connMySQL = new ConexionMySQL();
-    Connection conn = connMySQL.open();
-    java.sql.CallableStatement cstmt = conn.prepareCall(sql);
-    
-    cstmt.setInt(1, s.getIdSalon());             
-    cstmt.setInt(2, s.getIdEdificio());           
-    cstmt.setString(3, s.getTipo());              
-    cstmt.setString(4, s.getNombre());            
-    cstmt.setInt(5, s.getCapacidad());            
-    cstmt.setString(6, s.getEstatus());           
-    
-    boolean hasResults = cstmt.execute();
-    
-    if (hasResults) {
-        ResultSet rs = cstmt.getResultSet();
-        if (rs.next()) {
-            resultado = rs.getString("mensaje");
-            int idActualizado = rs.getInt("id_salon");
-            System.out.println("ID actualizado: " + idActualizado);
+        String sql = "{CALL sp_actualizar_salon(?, ?, ?, ?, ?, ?)}";
+        String resultado = "";
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        Connection conn = connMySQL.open();
+        CallableStatement cstmt = conn.prepareCall(sql);
+        
+        cstmt.setInt(1, s.getIdSalon());             
+        cstmt.setInt(2, s.getIdEdificio());           
+        cstmt.setString(3, s.getTipo());              
+        cstmt.setString(4, s.getNombre());            
+        cstmt.setInt(5, s.getCapacidad());            
+        cstmt.setString(6, s.getEstatus());           
+        
+        boolean hasResults = cstmt.execute();
+        
+        if (hasResults) {
+            ResultSet rs = cstmt.getResultSet();
+            if (rs.next()) {
+                resultado = rs.getString("mensaje");
+                int idActualizado = rs.getInt("id_salon");
+                System.out.println("ID actualizado: " + idActualizado);
+            }
+            rs.close();
         }
-        rs.close();
+        
+        cstmt.close();
+        conn.close();
+        
+        return resultado;
     }
-    
-    cstmt.close();
-    conn.close();
-    
-    return resultado;
-}
    
    public String eliminarSalon(int idSalon) throws Exception {
-    String sql = "{CALL sp_eliminar_salon(?)}";
-    String resultado = "";
-    
-    ConexionMySQL connMySQL = new ConexionMySQL();
-    Connection conn = connMySQL.open();
-    java.sql.CallableStatement cstmt = conn.prepareCall(sql);
-    
-    cstmt.setInt(1, idSalon);
-    
-    boolean hasResults = cstmt.execute();
-    
-    if (hasResults) {
-        ResultSet rs = cstmt.getResultSet();
-        if (rs.next()) {
-            resultado = rs.getString("mensaje");
+        String sql = "{CALL sp_eliminar_salon(?)}";
+        String resultado = "";
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        Connection conn = connMySQL.open();
+        CallableStatement cstmt = conn.prepareCall(sql);
+        
+        cstmt.setInt(1, idSalon);
+        
+        boolean hasResults = cstmt.execute();
+        
+        if (hasResults) {
+            ResultSet rs = cstmt.getResultSet();
+            if (rs.next()) {
+                resultado = rs.getString("mensaje");
+            }
+            rs.close();
         }
-        rs.close();
+        
+        cstmt.close();
+        conn.close();
+        
+        return resultado;
     }
-    
-    cstmt.close();
-    conn.close();
-    
-    return resultado;
-}
+   
    public List<Salones> obtenerDetalleSalon(int idSalon) throws Exception {
         List<Salones> lista = new ArrayList<>();
         

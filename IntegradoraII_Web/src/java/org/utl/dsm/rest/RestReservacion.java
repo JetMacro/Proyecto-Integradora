@@ -8,21 +8,58 @@ import org.utl.dsm.integradoraweb.controller.ControllerReservacion;
 import org.utl.dsm.integradoraweb.model.Reservacion;
 import org.utl.dsm.integradoraweb.model.Salones;
 
+/**
+ * Servicio REST para la gestión de reservaciones en entorno local.
+ */
 @Path("reservacion")
 public class RestReservacion {
 
+    /**
+     * Obtiene el listado completo de reservaciones.
+     * URL: http://localhost:8080/IntegradoraII_Web/api/reservacion/getAll
+     */
     @Path("getAll")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll() {
         try {
-            List<Reservacion> lista = new ControllerReservacion().getAllReservaciones();
+            ControllerReservacion cr = new ControllerReservacion();
+            List<Reservacion> lista = cr.getAllReservaciones(); // Llama al método del controlador
             return Response.ok(new Gson().toJson(lista)).build();
         } catch (Exception e) {
-            return Response.ok("{\"error\":\"" + e.getMessage() + "\"}").build();
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                           .entity("{\"error\":\"" + e.getMessage() + "\"}")
+                           .build();
         }
     }
 
+    /**
+     * Inserta una nueva reservación.
+     * Espera un parámetro "reservacion" en formato JSON (x-www-form-urlencoded).
+     */
+    @Path("insertar")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response insertar(@FormParam("reservacion") String reservacionJson) {
+        try {
+            Gson gson = new Gson();
+            Reservacion r = gson.fromJson(reservacionJson, Reservacion.class);
+            ControllerReservacion cr = new ControllerReservacion();
+            cr.insertarReservacion(r); //
+            return Response.ok("{\"result\":\"OK\"}").build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                           .entity("{\"error\":\"" + e.getMessage() + "\"}")
+                           .build();
+        }
+    }
+
+    /**
+     * Actualiza una reservación existente.
+     */
     @Path("actualizar")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -32,56 +69,58 @@ public class RestReservacion {
             Gson gson = new Gson();
             Reservacion r = gson.fromJson(reservacionJson, Reservacion.class);
             ControllerReservacion cr = new ControllerReservacion();
-            int filas = cr.actualizarReservacion(r);
-            if (filas > 0) return Response.ok("{\"result\":\"OK\"}").build();
-            else return Response.ok("{\"error\":\"No se encontró el ID " + r.getIdReserva() + "\"}").build();
+            int filas = cr.actualizarReservacion(r); //
+            
+            if (filas > 0) {
+                return Response.ok("{\"result\":\"OK\"}").build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND)
+                               .entity("{\"error\":\"No se encontró el ID de la reserva\"}")
+                               .build();
+            }
         } catch (Exception e) {
-            e.printStackTrace(); 
-            String errorMsg = e.getMessage() != null ? e.getMessage() : e.toString();
-            return Response.status(Response.Status.OK)
-                           .entity("{\"error\":\"" + errorMsg.replace("\"", "'") + "\"}")
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                           .entity("{\"error\":\"" + e.getMessage() + "\"}")
                            .build();
         }
     }
 
-    @Path("insertar")
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response insertar(@FormParam("reservacion") String reservacionJson) {
-        try {
-            Reservacion r = new Gson().fromJson(reservacionJson, Reservacion.class);
-            new ControllerReservacion().insertarReservacion(r);
-            return Response.ok("{\"result\":\"OK\"}").build();
-        } catch (Exception e) {
-            return Response.ok("{\"error\":\"" + e.getMessage() + "\"}").build();
-        }
-    }
-    
+    /**
+     * Elimina (baja lógica) una reservación por ID.
+     */
     @Path("eliminar")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response eliminar(@FormParam("idReserva") int id) {
         try {
-            new ControllerReservacion().eliminarReservacion(id);
+            ControllerReservacion cr = new ControllerReservacion();
+            cr.eliminarReservacion(id); //
             return Response.ok("{\"result\":\"OK\"}").build();
         } catch (Exception e) {
-            return Response.ok("{\"error\":\"" + e.getMessage() + "\"}").build();
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                           .entity("{\"error\":\"" + e.getMessage() + "\"}")
+                           .build();
         }
     }
-    
+
+    /**
+     * Obtiene el catálogo de salones y edificios disponibles.
+     */
     @Path("getSalones")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSalones() {
         try {
-            List<Salones> lista = new ControllerReservacion().getAllSalones();
+            ControllerReservacion cr = new ControllerReservacion();
+            List<Salones> lista = cr.getAllSalones(); //
             return Response.ok(new Gson().toJson(lista)).build();
         } catch (Exception e) {
-            String errorMsg = e.getMessage() != null ? e.getMessage() : e.toString();
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                           .entity("{\"error\":\"" + errorMsg.replace("\"", "'") + "\"}")
+                           .entity("{\"error\":\"" + e.getMessage() + "\"}")
                            .build();
         }
     }

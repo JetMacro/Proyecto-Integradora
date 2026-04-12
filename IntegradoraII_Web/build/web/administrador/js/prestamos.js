@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const tableBody = document.querySelector("#tablaPrestamo tbody");
-    const apiUrl = "https://proyecto-integradora-production.up.railway.app/api/prestamos/getAll";
+    const apiUrl = "/api/prestamos/getAll";
 
     // --- 1. FUNCIÓN DE CARGA DE TABLA ---
     window.fetchPrestamo = async function () {
@@ -54,26 +54,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (item.estatus_prestamo === 'Atrasado' || item.estatus_prestamo === 'Extraviado')
                     badgeClass = "bg-danger";
 
-                let botonesAccion = "";
+               // --- Ubica esta parte dentro del data.forEach de fetchPrestamo ---
 
-                // 2. Comparamos contra minúsculas
-                if (rol === "administrador") {
-                    botonesAccion = `
-                    <button class="btn btn-sm btn-outline-primary me-2" onclick="prepararNuevaVersion(${item.id_prestamo})">
-                        <i class="bi bi-pencil-square"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger me-2" onclick="eliminarItem(${item.id_prestamo})">
-                        <i class="bi bi-trash3"></i>
-                    </button>
-                `;
-                }
+let botonesAccion = '<div class="d-flex justify-content-end align-items-center">';
 
-                // Botón de ver (siempre visible)
-                botonesAccion += `
-                <button class="btn btn-sm btn-outline-success" onclick="mostrarDetalle(${item.id_prestamo})">
-                    <i class="bi bi-eye"></i>
-                </button>
-            `;
+// 2. Comparamos contra minúsculas
+if (rol === "administrador") {
+    botonesAccion += `
+        <button class="btn btn-sm btn-outline-primary me-1" onclick="prepararNuevaVersion(${item.id_prestamo})" title="Editar">
+            <i class="bi bi-pencil-square"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-danger me-1" onclick="eliminarItem(${item.id_prestamo})" title="Eliminar">
+            <i class="bi bi-trash3"></i>
+        </button>
+    `;
+}
+
+// Botón de ver (siempre visible)
+botonesAccion += `
+    <button class="btn btn-sm btn-outline-success" onclick="mostrarDetalle(${item.id_prestamo})" title="Ver detalles">
+        <i class="bi bi-eye"></i>
+    </button>
+</div>`; // Cerramos el div d-flex
 
                 const row = document.createElement("tr");
                 // 3. Limpiamos el HTML (quitamos el td duplicado al final)
@@ -199,7 +201,7 @@ window.eliminarItem = async (id) => {
     if (result.isConfirmed) {
         try {
             console.log("Enviando petición al servidor...");
-            const response = await fetch(`https://proyecto-integradora-production.up.railway.app/api/prestamos/delete`, {
+            const response = await fetch(`/api/prestamos/delete`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({id_prestamo: parseInt(id)}) // Enviamos el ID que llegó por parámetro
@@ -273,7 +275,7 @@ window.guardarCambiosPrestamo = async function () {
 
     try {
         Swal.showLoading();
-        const response = await fetch(`https://proyecto-integradora-production.up.railway.app/api/prestamos/update`, {
+        const response = await fetch(`/api/prestamos/update`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(datos)
@@ -314,7 +316,7 @@ window.guardarNuevoPrestamo = async function () {
 
     try {
         Swal.showLoading();
-        const response = await fetch(`https://proyecto-integradora-production.up.railway.app/api/prestamos/insert`, {
+        const response = await fetch(`/api/prestamos/insert`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(datos)
@@ -343,5 +345,5 @@ window.guardarNuevoPrestamo = async function () {
 
 window.cerrarSesion = () => {
     localStorage.clear();
-    window.location.href = "../index.html";
+    window.location.href = window.location.origin + "/index.html";
 };

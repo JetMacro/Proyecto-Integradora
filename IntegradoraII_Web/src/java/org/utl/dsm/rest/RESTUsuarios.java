@@ -1,19 +1,24 @@
 package org.utl.dsm.rest;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.FormParam;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.utl.dsm.integradoraweb.controller.ControllerUsuarios;
-import org.utl.dsm.integradoraweb.model.Usuarios;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.FormParam;
 import java.util.List;
 
+import org.utl.dsm.integradoraweb.controller.ControllerUsuarios;
+import org.utl.dsm.integradoraweb.model.Usuarios;
+
+/**
+ *
+ * @author rodod
+ */
 @Path("usuario")
 public class RESTUsuarios {
 
@@ -21,37 +26,39 @@ public class RESTUsuarios {
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(String jsonEntrada) {
+    public Response login(Usuarios ul) {
+
+        // --- INICIO DE LA CORRECCIÓN ---
+        // Este "chismoso" imprimirá en la consola de NetBeans lo que llega desde tu página web
+        System.out.println("LLEGÓ A JAVA -> Matrícula: " + ul.getMatricula() + " | Pass: " + ul.getContrasenia());
+        // --- FIN DE LA CORRECCIÓN ---
+
         try {
-            // 1. Recibimos un String y Gson se encarga de convertirlo, evitando el error 500 de Tomcat
-            Gson gson = new Gson();
-            Usuarios ul = gson.fromJson(jsonEntrada, Usuarios.class);
-
-            System.out.println("LLEGÓ A JAVA -> Matrícula: " + ul.getMatricula() + " | Pass: " + ul.getContrasenia());
-
-            // 2. Ejecutamos la base de datos
             ControllerUsuarios ctrl = new ControllerUsuarios();
             Usuarios u = ctrl.login(ul.getMatricula(), ul.getContrasenia());
-
+            
             if (u == null) {
-                return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("{\"error\":\"Credenciales incorrectas\"}").build();
+                JsonObject error = new JsonObject();
+                error.addProperty("error", "Credenciales inválidas o usuario inactivo.");
+                return Response.status(Response.Status.UNAUTHORIZED).entity(error.toString()).build();
             }
 
-            // 3. Regresamos el resultado convertido a texto
-            String jsonRespuesta = gson.toJson(u);
-            return Response.status(Response.Status.OK).entity(jsonRespuesta).build();
-            
+            Gson gson = new Gson();
+            String out = gson.toJson(u);
+            return Response.status(Response.Status.OK).entity(out).build();
+
         } catch (Exception e) {
-            // Imprimimos el error forzosamente en la consola de Railway
-            System.out.println("ERROR CRÍTICO EN JAVA: " + e.getMessage());
             e.printStackTrace();
-            
-            // Cambiamos el status a 400 para que Tomcat no sobreescriba nuestro JSON
-            return Response.status(400).entity("{\"error\":\"" + e.getMessage() + "\"}").build();
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "Error interno del servidor. Intente más tarde.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error.toString()).build();
         }
     }
 
+    // ==========================================
+    // MÉTODOS DE GESTIÓN DE USUARIOS
+    // ==========================================
+    
     @GET
     @Path("getAll")
     @Produces(MediaType.APPLICATION_JSON)
@@ -61,8 +68,8 @@ public class RESTUsuarios {
             List<Usuarios> lista = ctrl.getAll();
 
             Gson gson = new Gson();
-            String jsonRespuesta = gson.toJson(lista);
-            return Response.status(Response.Status.OK).entity(jsonRespuesta).build();
+            String out = gson.toJson(lista);
+            return Response.status(Response.Status.OK).entity(out).build();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,11 +83,8 @@ public class RESTUsuarios {
     @Path("insertar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertar(String jsonEntrada) {
+    public Response insertar(Usuarios u) {
         try {
-            Gson gson = new Gson();
-            Usuarios u = gson.fromJson(jsonEntrada, Usuarios.class);
-
             ControllerUsuarios ctrl = new ControllerUsuarios();
             ctrl.insertar(u);
 
@@ -100,11 +104,8 @@ public class RESTUsuarios {
     @Path("modificar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response modificar(String jsonEntrada) {
+    public Response modificar(Usuarios u) {
         try {
-            Gson gson = new Gson();
-            Usuarios u = gson.fromJson(jsonEntrada, Usuarios.class);
-
             ControllerUsuarios ctrl = new ControllerUsuarios();
             ctrl.modificar(u);
 
@@ -136,6 +137,52 @@ public class RESTUsuarios {
             e.printStackTrace();
             JsonObject error = new JsonObject();
             error.addProperty("error", "Error al eliminar el usuario.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error.toString()).build();
+        }
+    }
+
+    // ==========================================
+    // MÉTODOS PARA RECUPERACIÓN DE CONTRASEÑA
+    // ==========================================
+
+    @POST
+    @Path("solicitarRecuperacion")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response solicitarRecuperacion(Usuarios u) {
+        try {
+            ControllerUsuarios ctrl = new ControllerUsuarios();
+            ctrl.enviarCorreoRecuperacion(u.getCorreo());
+            
+            JsonObject respuesta = new JsonObject();
+            respuesta.addProperty("mensaje", "Correo de recuperación enviado exitosamente.");
+            return Response.status(Response.Status.OK).entity(respuesta.toString()).build();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "Ocurrió un error al intentar enviar el correo. Verifique si existe en la BD.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error.toString()).build();
+        }
+    }
+
+    @POST
+    @Path("actualizarPassword")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response actualizarPassword(Usuarios u) {
+        try {
+            ControllerUsuarios ctrl = new ControllerUsuarios();
+            ctrl.actualizarPassword(u.getCorreo(), u.getContrasenia());
+            
+            JsonObject respuesta = new JsonObject();
+            respuesta.addProperty("mensaje", "Contraseña actualizada correctamente.");
+            return Response.status(Response.Status.OK).entity(respuesta.toString()).build();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "Error al actualizar la contraseña en la base de datos.");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error.toString()).build();
         }
     }

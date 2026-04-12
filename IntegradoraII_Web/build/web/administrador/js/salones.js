@@ -1,6 +1,6 @@
 // salones.js
 
-const API_URL = 'https://proyecto-integradora-production.up.railway.app/api';
+const API_URL = '/api';
 
 let todosLosSalones = [];
 
@@ -242,7 +242,7 @@ window.guardarSalon = async () => {
             body: JSON.stringify(salonData)
         });
         
-        const data = await response.json();
+        const data = await response.json().catch(() => ({ mensaje: "Error al procesar respuesta" }));
         
         if (data.mensaje === 'Salón agregado correctamente' || 
             data.mensaje === 'Salón actualizado correctamente') {
@@ -449,5 +449,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.cerrarSesion = () => {
     localStorage.clear();
-    window.location.href = "../index.html";
+    window.location.href = window.location.origin + "/index.html";
 };

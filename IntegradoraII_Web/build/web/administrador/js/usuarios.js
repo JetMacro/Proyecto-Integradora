@@ -1,4 +1,4 @@
-const API_URL = 'https://proyecto-integradora-production.up.railway.app/api';
+const API_URL = '/api';
 
 let todosLosUsuarios = [];
 
@@ -251,7 +251,7 @@ window.guardarUsuario = async () => {
             body: JSON.stringify(userData)
         });
         
-        const data = await response.json();
+        const data = await response.json().catch(() => ({ error: "Error en la respuesta del servidor" }));
         
         if (response.ok) {
             Swal.fire({ icon: 'success', title: 'Éxito', text: data.mensaje || 'Operación exitosa', timer: 1500, showConfirmButton: false });
@@ -318,5 +318,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.cerrarSesion = () => {
     localStorage.clear();
-    window.location.href = "../index.html";
+    window.location.href = window.location.origin + "/index.html";
 };

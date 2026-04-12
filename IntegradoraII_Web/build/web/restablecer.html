@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="login.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Gestión UTL - Restablecer Contraseña</title>
+  </head>
+  <body>
+    <div class="container">
+      <img src="assets/img/logo_sito_app.png" alt="Logo UTL" class="main-logo" />
+      <h3>Gestión UTL</h3>
+      <p class="subtitle">Crear nueva contraseña</p>
+
+      <div class="content">
+        <form class="form" id="form-restablecer">
+          
+          <div class="input-field">
+            <div class="input-wrapper">
+              <img src="assets/img/contrasena (1).png" alt="Pass Icon" class="field-png" />
+              <input type="password" required id="new-password" placeholder=" " />
+              <label for="new-password">Nueva Contraseña</label>
+            </div>
+          </div>
+
+          <div class="input-field">
+            <div class="input-wrapper">
+              <img src="assets/img/contrasena (1).png" alt="Pass Icon" class="field-png" />
+              <input type="password" required id="confirm-password" placeholder=" " />
+              <label for="confirm-password">Confirmar Contraseña</label>
+            </div>
+          </div>
+
+          <div class="btn-container">
+            <button type="submit" class="btn">Guardar Contraseña</button>
+          </div>
+
+          <a href="index.html" style="margin-top: 15px; display: inline-block;">Volver al Login</a>
+        </form>
+      </div>
+      <p class="footer-tag">© UTL 2026</p>
+    </div>
+
+    <script>
+      // 1. Extraemos el correo que viene oculto en el link que mandamos al email
+      const urlParams = new URLSearchParams(window.location.search);
+      const correoDestino = urlParams.get('correo');
+
+      // Si alguien entra a restablecer.html sin venir desde su correo, lo sacamos
+      if(!correoDestino) {
+          Swal.fire('Error', 'Enlace inválido o expirado.', 'error').then(() => {
+              window.location.href = 'index.html';
+          });
+      }
+
+      // 2. Lógica al presionar "Guardar Contraseña"
+      document.getElementById('form-restablecer').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const pass1 = document.getElementById('new-password').value;
+          const pass2 = document.getElementById('confirm-password').value;
+
+          // Validamos que coincidan
+          if(pass1 !== pass2) {
+              Swal.fire('Atención', 'Las contraseñas no coinciden. Intenta de nuevo.', 'warning');
+              return;
+          }
+
+          Swal.fire({ title: 'Guardando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+          try {
+              // 3. Mandamos la nueva contraseña y el correo a tu API de Java
+              const response = await fetch('/api/usuario/actualizarPassword', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ correo: correoDestino, contrasenia: pass1 })
+              });
+              
+              const data = await response.json();
+
+              if(response.ok) {
+                  Swal.fire('¡Éxito!', 'Tu contraseña ha sido actualizada.', 'success').then(() => {
+                      window.location.href = 'index.html'; // Lo regresamos al login
+                  });
+              } else {
+                  Swal.fire('Error', data.error, 'error');
+              }
+          } catch(error) {
+              Swal.fire('Error de red', 'No se pudo conectar con el servidor.', 'error');
+          }
+      });
+    </script>
+  </body>
+</html>

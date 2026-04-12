@@ -1,14 +1,13 @@
 package org.utl.dsm.integradoraweb.model;
 
 public class Usuarios {
-
     // Datos de tbl_usuarios
     private int id_usuario;
     private String matricula;
     private String id_rol;
     private String id_turno;
     private String id_estatus;
-    private String contrasenia;
+    private String contrasenia; 
 
     // Datos de tbl_personas
     private int id_persona;
@@ -19,7 +18,7 @@ public class Usuarios {
     private String telefono;
     private String fecha_nacimiento;
     private String direccion;
-
+    
     // Nuevos agregados mau
     private String token;
     private String last_token;
@@ -48,120 +47,50 @@ public class Usuarios {
     }
 
     // Getters y Setters
-    public int getId_usuario() {
-        return id_usuario;
-    }
+    public int getId_usuario() { return id_usuario; }
+    public void setId_usuario(int id_usuario) { this.id_usuario = id_usuario; }
 
-    public void setId_usuario(int id_usuario) {
-        this.id_usuario = id_usuario;
-    }
+    public String getMatricula() { return matricula; }
+    public void setMatricula(String matricula) { this.matricula = matricula; }
 
-    public String getMatricula() {
-        return matricula;
-    }
+    public String getId_rol() { return id_rol; }
+    public void setId_rol(String id_rol) { this.id_rol = id_rol; }
 
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
-    }
+    public String getId_turno() { return id_turno; }
+    public void setId_turno(String id_turno) { this.id_turno = id_turno; }
 
-    public String getId_rol() {
-        return id_rol;
-    }
+    public String getId_estatus() { return id_estatus; }
+    public void setId_estatus(String id_estatus) { this.id_estatus = id_estatus; }
 
-    public void setId_rol(String id_rol) {
-        this.id_rol = id_rol;
-    }
+    public String getContrasenia() { return contrasenia; }
+    public void setContrasenia(String contrasenia) { this.contrasenia = contrasenia; }
 
-    public String getId_turno() {
-        return id_turno;
-    }
+    public int getId_persona() { return id_persona; }
+    public void setId_persona(int id_persona) { this.id_persona = id_persona; }
 
-    public void setId_turno(String id_turno) {
-        this.id_turno = id_turno;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getId_estatus() {
-        return id_estatus;
-    }
+    public String getApellido_paterno() { return apellido_paterno; }
+    public void setApellido_paterno(String apellido_paterno) { this.apellido_paterno = apellido_paterno; }
 
-    public void setId_estatus(String id_estatus) {
-        this.id_estatus = id_estatus;
-    }
+    public String getApellido_materno() { return apellido_materno; }
+    public void setApellido_materno(String apellido_materno) { this.apellido_materno = apellido_materno; }
 
-    public String getContrasenia() {
-        return contrasenia;
-    }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
 
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
-    }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
-    public int getId_persona() {
-        return id_persona;
-    }
+    public String getFecha_nacimiento() { return fecha_nacimiento; }
+    public void setFecha_nacimiento(String fecha_nacimiento) { this.fecha_nacimiento = fecha_nacimiento; }
 
-    public void setId_persona(int id_persona) {
-        this.id_persona = id_persona;
-    }
+    public String getDireccion() { return direccion; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido_paterno() {
-        return apellido_paterno;
-    }
-
-    public void setApellido_paterno(String apellido_paterno) {
-        this.apellido_paterno = apellido_paterno;
-    }
-
-    public String getApellido_materno() {
-        return apellido_materno;
-    }
-
-    public void setApellido_materno(String apellido_materno) {
-        this.apellido_materno = apellido_materno;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getFecha_nacimiento() {
-        return fecha_nacimiento;
-    }
-
-    public void setFecha_nacimiento(String fecha_nacimiento) {
-        this.fecha_nacimiento = fecha_nacimiento;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
+    // token
     
-    // agragados Token
-
     public String getToken() {
         return token;
     }

@@ -82,15 +82,3 @@
 .user-avatar i {
   font-size: 1.3rem;
 }
-
-@media (max-width: 768px) {
-    #page-content-wrapper {
-        padding: 15px !important; /* Reduce espacio en las orillas */
-    }
-    .table-responsive {
-        border: 0; /* Limpia bordes innecesarios en móvil */
-    }
-    .btn-sm {
-        margin-bottom: 5px; /* Separa los botones de acción si se enciman */
-    }
-}

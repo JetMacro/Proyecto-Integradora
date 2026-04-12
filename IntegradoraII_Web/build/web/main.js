@@ -1,25 +1,16 @@
+/**
+ * Archivo: main.js
+ * Controlador de autenticacion de sesion
+ */
 document.addEventListener("DOMContentLoaded", () => {
-    const toggleButton = document.getElementById("menu-toggle");
-    const body = document.body;
 
-    if (toggleButton) {
-        toggleButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            body.classList.toggle("sb-hidden");
-        });
-    } 
+    // Rutas Locales
+    const API_LOGIN = "/api/usuario/login";
+    const DASHBOARD_URL = "administrador/dashboard.html";
 
-    const currentPath = window.location.pathname.split("/").pop() || "index.html";
-    const links = document.querySelectorAll(".nav-link");
-    links.forEach((link) => {
-        if (link.getAttribute("href") === currentPath) {
-            link.classList.add("active");
-        }
-    });
-
-    // -------- Lógica de Login --------
-    const form = document.querySelector(".form");
-    if (!form) return; 
+    const form = document.getElementById("form-login");
+    if (!form)
+        return;
 
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
@@ -31,12 +22,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const contrasenia = passwordInput.value.trim();
 
         if (!nombreUsuario || !contrasenia) {
-            alert("Por favor, completa todos los campos.");
+            Swal.fire('Atencion', 'Por favor, completa todos los campos.', 'warning');
             return;
         }
 
+        Swal.fire({title: 'Autenticando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+
         try {
-            const response = await fetch("/api/usuario/login", {
+            const response = await fetch(API_LOGIN, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
@@ -46,42 +39,55 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: "Credenciales incorrectas" }));
-                alert(errorData.error || "Error al iniciar sesión.");
+                const errorTexto = await response.text();
+                console.error("Respuesta del servidor:", errorTexto);
+                Swal.fire('Error', 'Credenciales incorrectas o problema en el servidor.', 'error');
                 return;
             }
 
             const data = await response.json();
 
-            localStorage.setItem("id_usuario", data.id_usuario);
-            localStorage.setItem("id_rol", data.id_rol);
-            localStorage.setItem("nombre_usuario", `${data.nombre} ${data.apellido_paterno}`);
-            localStorage.setItem("matricula", data.matricula);
+            if (response.ok) {
+                console.log("Usuario autenticado:", data);
 
-            // Generar Token con Timestamp inicial
-            const prefijo = data.matricula.trim().toUpperCase().substring(0, 3).replace("A", "@");
-            const tokenInicial = (prefijo + "-" + Date.now().toString()).padEnd(25, "X");
-            localStorage.setItem("sessionToken", tokenInicial);
+                // Guardado de variables de sesion
+                localStorage.setItem("id_usuario", data.id_usuario);
+                localStorage.setItem("id_rol", data.id_rol);
+                localStorage.setItem("nombre_usuario", `${data.nombre} ${data.apellido_paterno}`);
+                localStorage.setItem("matricula", data.matricula);
 
-            window.location.href = "administrador/dashboard.html";
+                // agregado token
+                const prefijo = data.matricula.trim().toUpperCase().substring(0, 3).replace("A", "@");
+                const tokenInicial = (prefijo + "-" + Date.now().toString()).padEnd(25, "X");
+                localStorage.setItem("sessionToken", tokenInicial);
+                // fin del agregado
+                Swal.close();
+                window.location.href = DASHBOARD_URL;
+            } else {
+                Swal.fire('Error', data.error || "Credenciales incorrectas.", 'error');
+            }
 
         } catch (error) {
-            console.error("Error:", error);
-            alert("Error de conexión con el servidor.");
+            console.error("Error al conectarse al servidor:", error);
+            Swal.fire('Error de Conexion', 'No se pudo conectar al servidor.', 'error');
         }
     });
 });
 
-// CONFIGURACIÓN DE RUTAS
-const PATH_INICIO = window.location.origin + "/index.html";
+// redireccion centralizada 
+const LOGIN_PAGE = window.location.origin + "/index.html";
+
+
+// agregados token seguridad
 
 function verificarSesion() {
     const path = window.location.pathname;
-    if (path.endsWith("index.html") || path === "/" || path === "") return;
+    if (path.endsWith("index.html") || path.endsWith("/") || path === "")
+        return;
 
     const token = localStorage.getItem("sessionToken");
     if (!token) {
-        window.location.href = PATH_INICIO;
+        window.location.href = LOGIN_PAGE;// cambio de la locacion
         return;
     }
 
@@ -93,12 +99,11 @@ function verificarSesion() {
 
         if (ahora - timestampToken > diezMinutos) {
             localStorage.clear();
-            window.location.href = PATH_INICIO;
+            window.location.href = LOGIN_PAGE;
         }
     }
 }
 
-// Función centralizada para refrescar el tiempo del token
 function refrescarSesion() {
     const tokenActual = localStorage.getItem("sessionToken");
     if (tokenActual) {
@@ -109,14 +114,8 @@ function refrescarSesion() {
     }
 }
 
-// Escuchar carga de página
 window.addEventListener("load", verificarSesion);
-
-// REQUISITO: Refrescar token con CUALQUIER actividad (No solo clic)
-// Esto evita que la sesión se cierre si el usuario está escribiendo o moviendo el mouse
 ["click", "mousemove", "keypress"].forEach(evt => {
     document.addEventListener(evt, refrescarSesion);
 });
-
-// Verificación automática cada 10 segundos
 setInterval(verificarSesion, 10000);

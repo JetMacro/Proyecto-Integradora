@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function cargarDashboard() {
-    const url = 'https://proyecto-integradora-production.up.railway.app/api/dashboard/resumen';
+    const url = '/api/dashboard/resumen';
 
     fetch(url)
         .then(response => {
@@ -48,8 +48,8 @@ const filaHTML = `
         })
         .catch(error => {
             console.error('Hubo un problema con la petición:', error);
-            document.getElementById('total-inventario').innerText = "-";
-            document.getElementById('total-usuarios').innerText = "-";
+            if(document.getElementById('total-inventario')) document.getElementById('total-inventario').innerText = "!";
+            if(document.getElementById('total-usuarios')) document.getElementById('total-usuarios').innerText = "!";
         });
 }
 
@@ -83,5 +83,5 @@ function abrirModal(titulo, descripcion, fecha, autor) {
 
 window.cerrarSesion = () => {
     localStorage.clear();
-    window.location.href = "../index.html";
+    window.location.href = window.location.origin + "/index.html";
 };

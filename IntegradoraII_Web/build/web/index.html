@@ -3,75 +3,101 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="login.css" />
-    <title>Gestión UTL - Login</title>
-    <link rel="icon" type="image/png" href="assets/img/logo_sito_app.png" />
+    <title>Gestion UTL - Login</title>
   </head>
   <body>
       
     <div class="container">
-      <img
-        src="assets/img/logo_sito_app.png"
-        alt="Logo UTL"
-        class="main-logo"
-      />
-      <h3>Gestión UTL</h3>
+      <img src="assets/img/logo_sito_app.png" alt="Logo UTL" class="main-logo" />
+      <h3>Gestion UTL</h3>
       <p class="subtitle">Login</p>
 
       <div class="content">
-        <form class="form" action="">
+        <form class="form" id="form-login">
           <div class="input-field">
             <div class="input-wrapper">
-              <img
-                  src="assets/img/usuario.png"
-                alt="User Icon"
-                class="field-png"
-              />
-              <input
-                type="text"
-                required
-                autocomplete="off"
-                name="usuario"
-                id="username"
-              />
-              <label for="username">Usuario / Matrícula</label>
+              <img src="assets/img/usuario.png" alt="User Icon" class="field-png" />
+              <input type="text" required autocomplete="off" name="usuario" id="username" placeholder=" " />
+              <label for="username">Usuario / Matricula</label>
             </div>
           </div>
 
           <div class="input-field">
             <div class="input-wrapper">
-              <img
-                src="assets/img/contrasena (1).png"
-                alt="Pass Icon"
-                class="field-png"
-              />
-              <input
-                type="password"
-                required
-                autocomplete="off"
-                name="password"
-                id="password"
-              />
-              <label for="password">Contraseña</label>
+              <img src="assets/img/contrasena (1).png" alt="Pass Icon" class="field-png" />
+              <input type="password" required autocomplete="off" name="password" id="password" placeholder=" " />
+              <label for="password">Contrasena</label>
             </div>
           </div>
 
           <div class="btn-container">
-
-
-            <button type="submit" class="btn">Iniciar Sesión</button>
+            <button type="submit" class="btn">Iniciar Sesion</button>
           </div>
 
-          <a href="/">¿Olvidaste tu contraseña?</a>
+          <a href="#" id="link-olvide-pass" style="display: block; margin-top: 15px; text-align: center; text-decoration: none; color: #0034de; font-weight: bold;">¿Olvidaste tu contrasena?</a>
         </form>
       </div>
 
       <p class="footer-tag">© UTL 2026</p>
     </div>
+
+    <div id="modalRecuperacion" class="modal-overlay" style="display: none;">
+      <div class="container modal-content-login">
+        
+        <span class="close-btn" id="cerrarModalRecuperacion">&times;</span>
+        
+        <img src="assets/img/logo_sito_app.png" alt="Logo UTL" class="main-logo" />
+        <h3 id="tituloModal">Recuperar Contrasena</h3>
+        <p class="subtitle" id="subtituloModal">Ingresa tu correo para recibir un enlace</p>
+
+        <div class="content">
+          
+          <form class="form" id="form-solicitar">
+            <div class="input-field">
+              <div class="input-wrapper">
+                <img src="assets/img/usuario.png" alt="Email Icon" class="field-png" />
+                <input type="email" required id="correo-recuperacion" placeholder=" " />
+                <label for="correo-recuperacion">Correo Electronico</label>
+              </div>
+            </div>
+            
+            <div class="btn-container">
+              <button type="submit" class="btn">Enviar Enlace</button>
+            </div>
+          </form>
+
+          <form class="form" id="form-actualizar" style="display: none;">
+            <input type="hidden" id="correo-destino">
+            
+            <div class="input-field">
+              <div class="input-wrapper">
+                <img src="assets/img/contrasena (1).png" alt="Pass Icon" class="field-png" />
+                <input type="password" required id="new-password" placeholder=" " />
+                <label for="new-password">Nueva Contrasena</label>
+              </div>
+            </div>
+            
+            <div class="input-field">
+              <div class="input-wrapper">
+                <img src="assets/img/contrasena (1).png" alt="Pass Icon" class="field-png" />
+                <input type="password" required id="confirm-password" placeholder=" " />
+                <label for="confirm-password">Confirmar Contrasena</label>
+              </div>
+            </div>
+            
+            <div class="btn-container">
+              <button type="submit" class="btn">Guardar Contrasena</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="main.js"></script>
+    <script src="restablecer.js"></script>
   </body>
 </html>
