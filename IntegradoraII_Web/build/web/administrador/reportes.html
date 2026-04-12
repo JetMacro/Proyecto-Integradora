@@ -7,18 +7,14 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-        <link rel="icon" type="image/png" href="../assets/img/logo_sito_app.png" />
-        <title>Reportes | Gestión UTL</title>
+        <link rel="stylesheet" href="style.css" />
+        <title>Gestión UTL | Reportes</title>
         <style>
             .filter-section {
                 background-color: #f8f9fa;
                 border-radius: 8px;
                 padding: 1rem;
                 margin-bottom: 1.5rem;
-            }
-            #imgPreview, #detFoto {
-                object-fit: contain;
-                background-color: #f8f9fa;
             }
         </style>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -53,10 +49,15 @@
             <nav class="nav nav-pills flex-column flex-grow-1">
                 <a class="nav-link" href="dashboard.html"><i class="bi bi-grid-fill"></i> Dashboard</a>
                 <a class="nav-link" href="inventario.html"><i class="bi bi-box-seam-fill"></i> Inventario</a>
-                <a class="nav-link" href="prestamos.html"><i class="bi bi-collection-fill"></i> Prestamos</a>
+                <a class="nav-link" href="prestamos.html">
+                    <i class="bi bi-collection-fill"></i> Prestamos
+                </a>
                 <a class="nav-link" href="reservaciones.html"><i class="bi bi-calendar-event-fill"></i> Reservaciones</a>
                 <a class="nav-link active" href="reportes.html"><i class="bi bi-file-earmark-text-fill"></i> Reportes</a>
                 <a class="nav-link" href="salones.html"><i class="bi bi-door-open-fill"></i> Salones</a>
+                <a class="nav-link" href="usuarios.html">
+                    <i class="bi bi-people-fill"></i> Usuarios
+                </a>
             </nav>
         </div>
 
@@ -187,7 +188,6 @@
                                 </select>
                                 <label>Tipo de Daño</label>
                             </div>
-
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-secondary">EVIDENCIA FOTOGRÁFICA</label>
                                 <input type="file" class="form-control form-control-sm" id="txtFoto" accept="image/*" onchange="previsualizarImagen();">
@@ -195,7 +195,6 @@
                                     <img src="" id="imgPreview" style="max-width: 100%; max-height: 150px; border-radius: 5px;">
                                 </div>
                             </div>
-
                             <div class="form-floating mb-3">
                                 <textarea class="form-control" id="descripcion" style="height: 100px" required></textarea>
                                 <label>Descripción</label>
@@ -234,29 +233,21 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header" style="background-color: #2a2155;">
-                        <h5 class="modal-title text-white fw-bold">Detalles del Reporte</h5>
+                        <h5 class="modal-title text-white fw-bold">Detalles</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body p-4">
-                        <div class="text-center mb-4">
-                            <label class="text-secondary d-block small fw-bold mb-2">EVIDENCIA FOTOGRÁFICA:</label>
-                            <img id="detFoto" src="" class="img-fluid rounded shadow-sm border" 
-                                 style="max-height: 250px; display: none;" 
-                                 onerror="this.style.display='none';">
+                        <label class="text-secondary small fw-bold">COMENTARIO:</label>
+                        <p id="detDescripcion" class="mt-1 p-3 bg-light rounded border"></p>
+
+                        <div class="text-center mt-3">
+                            <label class="text-secondary small fw-bold d-block text-start">EVIDENCIA:</label>
+                            <img id="detFoto" src="" class="img-fluid rounded border shadow-sm mt-2" style="display: none; max-height: 250px;">
                         </div>
 
-                        <label class="text-secondary small fw-bold">COMENTARIO / DESCRIPCIÓN:</label>
-                        <p id="detDescripcion" class="mt-1 p-3 bg-light rounded border"></p>
-                        
                         <div class="row mt-3">
-                            <div class="col-6">
-                                <label class="small fw-bold">FECHA:</label>
-                                <p id="detFecha" class="small text-muted"></p>
-                            </div>
-                            <div class="col-6">
-                                <label class="small fw-bold">REPORTE POR (MATRÍCULA):</label>
-                                <p id="detUsuario" class="small text-muted"></p>
-                            </div>
+                            <div class="col-6"><label class="small fw-bold">FECHA:</label><p id="detFecha" class="small"></p></div>
+                            <div class="col-6"><label class="small fw-bold">POR:</label><p id="detUsuario" class="small"></p></div>
                         </div>
                     </div>
                 </div>
