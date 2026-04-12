@@ -178,6 +178,11 @@ window.mostrarDetalle = async function(id) {
         document.getElementById('detDescripcion').innerText = r.descripcion || "Sin descripción";
         document.getElementById('detFecha').innerText = r.fecha_reporte || "Sin fecha";
         
+        const elementoUsuario = document.getElementById('detUsuario'); 
+        if (elementoUsuario) {
+            elementoUsuario.innerText = r.matricula || "Sin matrícula";
+        }
+        
         const imgDetalle = document.getElementById('detFoto');
         imgDetalle.src = ""; // Limpiamos imagen previa
         imgDetalle.style.display = "none";
