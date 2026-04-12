@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const tableBody = document.querySelector("#tablaPrestamo tbody");
-    const apiUrl = "/IntegradoraII_Web/api/prestamos/getAll";
+    const apiUrl = "/api/prestamos/getAll";
 
     // --- 1. FUNCIÓN DE CARGA DE TABLA ---
     window.fetchPrestamo = async function () {
