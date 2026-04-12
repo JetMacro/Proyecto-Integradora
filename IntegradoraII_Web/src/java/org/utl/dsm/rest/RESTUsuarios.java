@@ -36,7 +36,7 @@ public class RESTUsuarios {
         try {
             ControllerUsuarios ctrl = new ControllerUsuarios();
             Usuarios u = ctrl.login(ul.getMatricula(), ul.getContrasenia());
-            
+
             if (u == null) {
                 JsonObject error = new JsonObject();
                 error.addProperty("error", "Credenciales inválidas o usuario inactivo.");
@@ -58,7 +58,6 @@ public class RESTUsuarios {
     // ==========================================
     // MÉTODOS DE GESTIÓN DE USUARIOS
     // ==========================================
-    
     @GET
     @Path("getAll")
     @Produces(MediaType.APPLICATION_JSON)
@@ -144,7 +143,6 @@ public class RESTUsuarios {
     // ==========================================
     // MÉTODOS PARA RECUPERACIÓN DE CONTRASEÑA
     // ==========================================
-
     @POST
     @Path("solicitarRecuperacion")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -153,16 +151,14 @@ public class RESTUsuarios {
         try {
             ControllerUsuarios ctrl = new ControllerUsuarios();
             ctrl.enviarCorreoRecuperacion(u.getCorreo());
-            
+
             JsonObject respuesta = new JsonObject();
             respuesta.addProperty("mensaje", "Correo de recuperación enviado exitosamente.");
             return Response.status(Response.Status.OK).entity(respuesta.toString()).build();
-            
+
         } catch (Exception e) {
-            e.printStackTrace();
-            JsonObject error = new JsonObject();
-            error.addProperty("error", "Ocurrió un error al intentar enviar el correo. Verifique si existe en la BD.");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error.toString()).build();
+            e.printStackTrace(); // Esto hará que el error real aparezca en los logs de Railway
+            return Response.status(500).entity("{\"error\":\"" + e.toString() + "\"}").build();
         }
     }
 
@@ -174,11 +170,11 @@ public class RESTUsuarios {
         try {
             ControllerUsuarios ctrl = new ControllerUsuarios();
             ctrl.actualizarPassword(u.getCorreo(), u.getContrasenia());
-            
+
             JsonObject respuesta = new JsonObject();
             respuesta.addProperty("mensaje", "Contraseña actualizada correctamente.");
             return Response.status(Response.Status.OK).entity(respuesta.toString()).build();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             JsonObject error = new JsonObject();
