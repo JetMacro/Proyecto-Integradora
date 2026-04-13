@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const tableBody = document.querySelector("#tablaInventario tbody");
-    const apiUrl = "/IntegradoraII_Web/api/inventario/getAll";
+    const apiUrl = "/api/inventario/getAll";
 
     // --- 1. FUNCIÓN DE CARGA DE TABLA ---
     window.fetchInventario = async function () {
@@ -134,7 +134,7 @@ window.guardarInventario = async () => {
 
         console.log("Enviando estos datos:", datos);
 
-        const response = await fetch("/IntegradoraII_Web/api/inventario/save", {
+        const response = await fetch("/api/inventario/save", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(datos)
@@ -175,7 +175,7 @@ window.guardarInventario = async () => {
 window.cargarEdificios = async () => {
     const selectEdi = document.getElementById("txtIdEdificio");
     try {
-        const resp = await fetch("/IntegradoraII_Web/api/inventario/getEdificios");
+        const resp = await fetch("/api/inventario/getEdificios");
         const edificios = await resp.json();
         selectEdi.innerHTML = '<option value="">Seleccione un edificio...</option>';
         edificios.forEach(edi => {
@@ -199,7 +199,7 @@ window.cargarSalones = async () => {
     }
 
     try {
-        const resp = await fetch(`/IntegradoraII_Web/api/inventario/getSalones?idEdificio=${valEdificio}`);
+        const resp = await fetch(`/api/inventario/getSalones?idEdificio=${valEdificio}`);
         const salones = await resp.json();
 
         selectSalon.innerHTML = '<option value="">Seleccione un salón...</option>';
@@ -304,7 +304,7 @@ window.verDetalleMaterial = async (nombreMaterial) => {
         const container = document.getElementById('modalDetalleBody');
         container.innerHTML = '<div class="text-center my-5"><div class="spinner-border text-primary"></div><p>Buscando...</p></div>';
 
-        const response = await fetch(`/IntegradoraII_Web/api/inventario/getByName?nombre=${encodeURIComponent(nombreMaterial)}`);
+        const response = await fetch(`/api/inventario/getByName?nombre=${encodeURIComponent(nombreMaterial)}`);
         const data = await response.json();
 
         if (data && data.length > 0) {
@@ -363,7 +363,7 @@ window.eliminarItem = async (id) => {
     if (result.isConfirmed) {
         try {
             console.log("Enviando petición al servidor...");
-            const response = await fetch(`/IntegradoraII_Web/api/inventario/delete`, {
+            const response = await fetch(`/api/inventario/delete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_inventario: id }) // Enviamos el ID que llegó por parámetro
@@ -425,7 +425,7 @@ window.editarItem = (id, edificio, salon, ubicacion, estatus) => {
 window.actualizarItem = async () => {
     const idVal = document.getElementById("editItemId").value;
     const datos = {id_inventario: parseInt(idVal), id_estatus_actual: document.getElementById("selEditEstatus").value};
-    await fetch(`/IntegradoraII_Web/api/inventario/update`, {
+    await fetch(`/api/inventario/update`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(datos)
