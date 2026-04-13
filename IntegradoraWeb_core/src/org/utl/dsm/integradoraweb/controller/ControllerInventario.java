@@ -15,7 +15,7 @@ public class ControllerInventario {
 
     public List<Inventario> getAll() throws Exception {
         List<Inventario> lista = new ArrayList<>();
-        String query = "SELECT * FROM db_gam.view_inventario_general;";
+        String query = "SELECT * FROM view_inventario_general;";
 
         ConexionMySQL connMySQL = new ConexionMySQL();
         Connection con = connMySQL.open();
