@@ -41,6 +41,7 @@ public class RESTReportes {
 
     @POST
     @Path("insertar")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertar(@FormParam("datos") String datos,
             @FormParam("idUsuario") int idU,
@@ -68,6 +69,7 @@ public class RESTReportes {
 
     @POST
     @Path("eliminar")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response eliminar(@FormParam("idReporte") int idR) {
         try {
