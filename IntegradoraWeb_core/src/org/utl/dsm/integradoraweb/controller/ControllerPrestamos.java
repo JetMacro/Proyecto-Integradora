@@ -13,7 +13,7 @@ public class ControllerPrestamos {
 
     public List<Prestamos> getAll() throws Exception {
         List<Prestamos> lista = new ArrayList<>();
-        String query = "SELECT * FROM db_gam.view_prestamos_inventario;";
+        String query = "SELECT * FROM view_prestamos_inventario;";
 
         ConexionMySQL connMySQL = new ConexionMySQL();
         Connection con = connMySQL.open();
