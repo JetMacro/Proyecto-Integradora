@@ -96,17 +96,7 @@
                 </button>
             </div>
             <div class="row g-4 mb-4">
-                <div class="col-sm-6 col-lg-3 d-flex">
-                    <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
-                        <p class=" text-secondary small fw-semibold mb-1">
-                            En Uso
-                        </p>
-                        <h3 class="fw-bold mb-0 mt-auto text-warning d-flex justify-content-between align-items-center">
-                            <span id="cardEnUso">0</span>
-                            <i class="bi bi-clock text-warning fs-5"></i>
-                        </h3>
-                    </div>
-                </div>
+                
                 <div class="col-sm-6 col-lg-3 d-flex">
                     <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
                         <p class="text-secondary small fw-semibold mb-1">
@@ -118,17 +108,20 @@
                         </h3>
                     </div>
                 </div>
+                
                 <div class="col-sm-6 col-lg-3 d-flex">
                     <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
                         <p class=" text-secondary small fw-semibold mb-1">
-                            Total Recursos
+                            En Uso
                         </p>
-                        <h3 class="fw-bold mb-0 mt-auto text-primary d-flex justify-content-between align-items-center">
-                            <span id="cardTotal">0</span>
-                            <i class="bi bi-box-seam text-primary fs-5"></i>
+                        <h3 class="fw-bold mb-0 mt-auto text-warning d-flex justify-content-between align-items-center">
+                            <span id="cardEnUso">0</span>
+                            <i class="bi bi-clock text-warning fs-5"></i>
                         </h3>
                     </div>
                 </div>
+                
+                
                 <div class="col-sm-6 col-lg-3 d-flex">
                     <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
                         <p class=" text-secondary small fw-semibold mb-1">
@@ -140,8 +133,21 @@
                         </h3>
                     </div>
                 </div>
+                
+                <div class="col-sm-6 col-lg-3 d-flex">
+                    <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
+                        <p class=" text-secondary small fw-semibold mb-1">
+                            Total Recursos
+                        </p>
+                        <h3 class="fw-bold mb-0 mt-auto text-primary d-flex justify-content-between align-items-center">
+                            <span id="cardTotal">0</span>
+                            <i class="bi bi-box-seam text-primary fs-5"></i>
+                        </h3>
+                    </div>
+                </div>
             </div>
 
+            
             <!-- FILTROS -->
             <div class="filter-section">
                 <div class="row g-3">
@@ -173,16 +179,16 @@
                         </select>
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
-                        <button class="btn text-white btn-sm w-100" style="background-color: #2a2155; border-color: #2a2155;" id="btnFiltrar">
+                        <button class="btn text-white btn-sm w-100" style="background-color: #2a2155; border-color: #2a2155;" id="btnFiltrar" onclick="aplicarFiltros()">
                             <i class="bi bi-funnel"></i> Filtrar
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- TABLA Inventario General -->
+            <!-- TABLA Inventario General 
             <div class="bg-white p-3 rounded-3 border">
-                <div class="table-responsive">
+                <div class="table-responsive">-->
                     <!-- TABLA Inventario General -->
                     <div class="bg-white p-3 rounded-3 border">
                         <div class="table-responsive">
@@ -217,8 +223,8 @@
                         </div>
                     </div>
 
-                </div>
-            </div>
+                 <!--</div>
+            </div> -->
         </div>  
 
         <!-- Modal nuevo material -->
@@ -263,7 +269,8 @@
                                     <option value="Silla">Silla</option>
                                     <option value="Mesa">Mesa</option>
                                     <option value="Proyector">Proyector</option>
-                                    <option value="Cañon">Cañon</option>                    
+                                    <option value="Cañon">Cañon</option>
+                                    <option value="Pizarron">Pizarron</option> 
 
                                 </select>
                             </div>
