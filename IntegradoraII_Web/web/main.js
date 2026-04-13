@@ -114,6 +114,24 @@ function refrescarSesion() {
     }
 }
 
+const toggleButton = document.getElementById("menu-toggle");
+
+const body = document.body;
+
+
+
+if (toggleButton) {
+
+    toggleButton.addEventListener("click", (e) => {
+
+        e.preventDefault(); // Evita el comportamiento por defecto del enlace
+
+        body.classList.toggle("sb-hidden");
+
+    });
+
+}
+
 window.addEventListener("load", verificarSesion);
 ["click", "mousemove", "keypress"].forEach(evt => {
     document.addEventListener(evt, refrescarSesion);
