@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const tableBody = document.querySelector("#tablaInventario tbody");
-    const apiUrl = "../api/inventario/getAll";
+    const apiUrl = "IntegradoraII_Web/api/inventario/getAll";
 
     // --- 1. FUNCIÓN DE CARGA DE TABLA ---
     window.fetchInventario = async function () {
