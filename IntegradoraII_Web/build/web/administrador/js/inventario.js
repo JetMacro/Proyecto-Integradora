@@ -12,12 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
         menuToggle.addEventListener("click", () => {
             sidebar.classList.toggle("active");
         });
-        
-    const nombre = localStorage.getItem("nombre_usuario") || "Usuario";
-    const rolRaw = localStorage.getItem("id_rol") || "Invitado";
-    
-    if (document.getElementById('userNameDisplay')) document.getElementById('userNameDisplay').textContent = nombre;
-    if (document.getElementById('userRoleDisplay')) document.getElementById('userRoleDisplay').textContent = rolRaw;
+
+        const nombre = localStorage.getItem("nombre_usuario") || "Usuario";
+        const rolRaw = localStorage.getItem("id_rol") || "Invitado";
+
+        if (document.getElementById('userNameDisplay'))
+            document.getElementById('userNameDisplay').textContent = nombre;
+        if (document.getElementById('userRoleDisplay'))
+            document.getElementById('userRoleDisplay').textContent = rolRaw;
     }
 
     const tableBody = document.querySelector("#tablaInventario tbody");
@@ -44,12 +46,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const total = item.total ?? 0;
                 const enUso = total - disponibles;
                 const porcentaje = total ? Math.round((disponibles / total) * 100) : 0;
+                let disponibilidad = "Disponible";
 
                 let badgeClass = "bg-success";
-                if (porcentaje < 15)
+                if (porcentaje < 15) {
                     badgeClass = "bg-danger";
-                else if (porcentaje < 50)
+                    disponibilidad = "Critico";
+                } else if (porcentaje < 50) {
                     badgeClass = "bg-warning";
+                    disponibilidad = "Medio";
+                }
 
                 const row = document.createElement("tr");
                 row.innerHTML = `
@@ -59,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <td>${disponibles}</td>
                     <td>${enUso}</td>
                     <td class="fw-medium">
-                        <span class="badge ${badgeClass}">${porcentaje}% disponible</span>
+                        <span class="badge ${badgeClass}">${disponibilidad}</span>
                     </td>
                     <td>
                         <button class="btn btn-sm btn-outline-success" title="Detalles" onclick="verDetalleMaterial('${item.material}')">
@@ -83,25 +89,31 @@ document.addEventListener("DOMContentLoaded", () => {
         let totalRecursos = 0, totalDisponibles = 0, totalEnUso = 0, stockBajo = 0;
 
         data.forEach(item => {
-            const disponibles = item.disponibles ?? 0;
-            const total = item.total ?? 0;
+            // En un sistema de mobiliario, solemos contar por unidad o por stock
+            const disponibles = item.disponibles ?? (item.estatus === 'Activo' ? 1 : 0);
+            const total = item.total ?? 1; // Si es por unidad, el total es 1
+
             totalRecursos += total;
             totalDisponibles += disponibles;
             totalEnUso += (total - disponibles);
+
+            // Lógica de Stock Bajo (menos del 30% disponible)
             if (total > 0 && (disponibles / total) * 100 < 30)
                 stockBajo++;
         });
 
-        if (document.getElementById("cardTotal"))
-            document.getElementById("cardTotal").textContent = totalRecursos;
-        if (document.getElementById("cardDisponibles"))
-            document.getElementById("cardDisponibles").textContent = totalDisponibles;
-        if (document.getElementById("cardEnUso"))
-            document.getElementById("cardEnUso").textContent = totalEnUso;
-        if (document.getElementById("cardStockBajo"))
-            document.getElementById("cardStockBajo").textContent = stockBajo;
-    }
+        // Actualización de los elementos en el DOM
+        const actualizarTexto = (id, valor) => {
+            const el = document.getElementById(id);
+            if (el)
+                el.textContent = valor;
+        };
 
+        actualizarTexto("cardTotal", totalRecursos);
+        actualizarTexto("cardDisponibles", totalDisponibles);
+        actualizarTexto("cardEnUso", totalEnUso);
+        actualizarTexto("cardStockBajo", stockBajo);
+    }
     // --- 3. CARGAS INICIALES AL CARGAR DOM ---
     window.cargarEdificios();
     window.fetchInventario();
@@ -365,15 +377,15 @@ window.eliminarItem = async (id) => {
             console.log("Enviando petición al servidor...");
             const response = await fetch(`/api/inventario/delete`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_inventario: id }) // Enviamos el ID que llegó por parámetro
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id_inventario: id}) // Enviamos el ID que llegó por parámetro
             });
 
             if (response.ok) {
-               // 1. Cerramos el modal de Bootstrap primero
+                // 1. Cerramos el modal de Bootstrap primero
                 const modalEl = document.getElementById('modalDetalleInventario');
                 const modalInstance = bootstrap.Modal.getInstance(modalEl);
-                
+
                 if (modalInstance) {
                     modalInstance.hide();
                 }
@@ -393,7 +405,7 @@ window.eliminarItem = async (id) => {
 
                 // 4. ACTUALIZAR LA TABLA
                 if (typeof window.fetchInventario === "function") {
-                    window.fetchInventario(); 
+                    window.fetchInventario();
                 } else {
                     // Si por algo no encuentra la función, recarga la página completa
                     location.reload();
