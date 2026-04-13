@@ -8,40 +8,43 @@ async function cargarSalones() {
     try {
         const tbody = document.querySelector('tbody');
         tbody.innerHTML = '<tr><td colspan="6" class="text-center">Cargando salones...</td></tr>';
-        
+
         const response = await fetch(`${API_URL}/salones/getAll`);
-        
+
         if (!response.ok) {
             throw new Error('Error al cargar los datos');
         }
-        
+
         todosLosSalones = await response.json();
-        
+
         tbody.innerHTML = '';
-        
+
         if (todosLosSalones.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay salones disponibles</td></tr>';
             return;
         }
-        
+
         let activos = 0;
         let inactivos = 0;
         let eliminados = 0;
-        
+
         todosLosSalones.forEach(salon => {
-            if (salon.estatus === 'Activo') activos++;
-            else if (salon.estatus === 'Inactivo') inactivos++;
-            else if (salon.estatus === 'Eliminado') eliminados++;
-            
+            if (salon.estatus === 'Activo')
+                activos++;
+            else if (salon.estatus === 'Inactivo')
+                inactivos++;
+            else if (salon.estatus === 'Eliminado')
+                eliminados++;
+
             let badgeClass = 'bg-success';
             if (salon.estatus === 'Inactivo') {
                 badgeClass = 'bg-secondary';
             } else if (salon.estatus === 'Eliminado') {
                 badgeClass = 'bg-danger';
             }
-            
+
             const fila = document.createElement('tr');
-            
+
             fila.innerHTML = `
                 <td class="fw-medium">${salon.nombre}</td>
                 <td>${salon.tipo === 'Salon' ? 'Salón' : salon.tipo}</td>
@@ -60,21 +63,21 @@ async function cargarSalones() {
                     </button>
                 </td>
             `;
-            
+
             tbody.appendChild(fila);
         });
-        
+
         actualizarResumen(activos, inactivos, eliminados, todosLosSalones.length);
-        
+
         document.getElementById('filtroEdificio').value = '';
         document.getElementById('filtroTipo').value = '';
         document.getElementById('filtroEstatus').value = '';
-        
+
     } catch (error) {
         console.error('Error:', error);
-        document.querySelector('tbody').innerHTML = 
-            '<tr><td colspan="6" class="text-center text-danger">Error al cargar los datos</td></tr>';
-        
+        document.querySelector('tbody').innerHTML =
+                '<tr><td colspan="6" class="text-center text-danger">Error al cargar los datos</td></tr>';
+
         Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -85,7 +88,7 @@ async function cargarSalones() {
 
 function actualizarResumen(activos, inactivos, eliminados, total) {
     const tarjetas = document.querySelectorAll('.col-sm-6.col-lg-3 .fw-bold span');
-    
+
     if (tarjetas.length >= 4) {
         tarjetas[0].textContent = activos;
         tarjetas[1].textContent = inactivos;
@@ -98,47 +101,53 @@ function aplicarFiltros() {
     const filtroEdificio = document.getElementById('filtroEdificio').value;
     const filtroTipo = document.getElementById('filtroTipo').value;
     const filtroEstatus = document.getElementById('filtroEstatus').value;
-    
+
     const tbody = document.querySelector('tbody');
     tbody.innerHTML = '';
-    
+
     let salonesFiltrados = todosLosSalones.filter(salon => {
         let cumple = true;
-        
-        if (filtroEdificio && salon.edificio !== filtroEdificio) cumple = false;
+
+        if (filtroEdificio && salon.edificio !== filtroEdificio)
+            cumple = false;
         if (filtroTipo) {
             const tipoComparar = salon.tipo === 'Salon' ? 'Salón' : salon.tipo;
-            if (tipoComparar !== filtroTipo) cumple = false;
+            if (tipoComparar !== filtroTipo)
+                cumple = false;
         }
-        if (filtroEstatus && salon.estatus !== filtroEstatus) cumple = false;
-        
+        if (filtroEstatus && salon.estatus !== filtroEstatus)
+            cumple = false;
+
         return cumple;
     });
-    
+
     if (salonesFiltrados.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay salones que coincidan con los filtros</td></tr>';
         actualizarResumen(0, 0, 0, 0);
         return;
     }
-    
+
     let activos = 0;
     let inactivos = 0;
     let eliminados = 0;
-    
+
     salonesFiltrados.forEach(salon => {
-        if (salon.estatus === 'Activo') activos++;
-        else if (salon.estatus === 'Inactivo') inactivos++;
-        else if (salon.estatus === 'Eliminado') eliminados++;
-        
+        if (salon.estatus === 'Activo')
+            activos++;
+        else if (salon.estatus === 'Inactivo')
+            inactivos++;
+        else if (salon.estatus === 'Eliminado')
+            eliminados++;
+
         let badgeClass = 'bg-success';
         if (salon.estatus === 'Inactivo') {
             badgeClass = 'bg-secondary';
         } else if (salon.estatus === 'Eliminado') {
             badgeClass = 'bg-danger';
         }
-        
+
         const fila = document.createElement('tr');
-        
+
         fila.innerHTML = `
             <td class="fw-medium">${salon.nombre}</td>
             <td>${salon.tipo === 'Salon' ? 'Salón' : salon.tipo}</td>
@@ -157,10 +166,10 @@ function aplicarFiltros() {
                 </button>
             </td>
         `;
-        
+
         tbody.appendChild(fila);
     });
-    
+
     actualizarResumen(activos, inactivos, eliminados, salonesFiltrados.length);
 }
 
@@ -178,16 +187,16 @@ window.abrirModalAgregar = () => {
     document.getElementById('salonNombre').value = '';
     document.getElementById('salonCapacidad').value = '';
     document.getElementById('salonEstatus').value = 'Activo';
-    
+
     document.getElementById('modalSalonTitulo').innerHTML = '<i class="bi bi-plus-circle"></i> Agregar Salón';
-    
+
     const modal = new bootstrap.Modal(document.getElementById('modalSalon'));
     modal.show();
 };
 
 window.abrirModalEditar = (id) => {
     const salon = todosLosSalones.find(s => s.idSalon === id);
-    
+
     if (salon) {
         document.getElementById('salonId').value = salon.idSalon;
         document.getElementById('salonIdEdificio').value = salon.idEdificio;
@@ -195,9 +204,9 @@ window.abrirModalEditar = (id) => {
         document.getElementById('salonNombre').value = salon.nombre;
         document.getElementById('salonCapacidad').value = salon.capacidad;
         document.getElementById('salonEstatus').value = salon.estatus;
-        
+
         document.getElementById('modalSalonTitulo').innerHTML = '<div class="text-center"><i class="bi bi-pencil-square"></i> Editar Salón</div>';
-        
+
         const modal = new bootstrap.Modal(document.getElementById('modalSalon'));
         modal.show();
     } else {
@@ -213,12 +222,12 @@ window.guardarSalon = async () => {
     try {
         const id = document.getElementById('salonId').value;
         const endpoint = id ? `${API_URL}/salones/actualizar` : `${API_URL}/salones/insertar`;
-        
-        if (!document.getElementById('salonIdEdificio').value || 
-            !document.getElementById('salonTipo').value || 
-            !document.getElementById('salonNombre').value || 
-            !document.getElementById('salonCapacidad').value) {
-            
+
+        if (!document.getElementById('salonIdEdificio').value ||
+                !document.getElementById('salonTipo').value ||
+                !document.getElementById('salonNombre').value ||
+                !document.getElementById('salonCapacidad').value) {
+
             Swal.fire({
                 icon: 'warning',
                 title: 'Campos incompletos',
@@ -226,7 +235,19 @@ window.guardarSalon = async () => {
             });
             return;
         }
-        
+
+        // VALIDACIÓN SOLICITADA
+        const capacidad = parseInt(document.getElementById('salonCapacidad').value);
+
+        if (capacidad < 20 || capacidad > 60) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Capacidad inválida',
+                text: 'La capacidad debe ser entre 20 y 60 personas'
+            });
+            return;
+        }
+
         const salonData = {
             idSalon: id ? parseInt(id) : 0,
             idEdificio: parseInt(document.getElementById('salonIdEdificio').value),
@@ -235,18 +256,18 @@ window.guardarSalon = async () => {
             capacidad: parseInt(document.getElementById('salonCapacidad').value),
             estatus: document.getElementById('salonEstatus').value
         };
-        
+
         const response = await fetch(endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(salonData)
         });
-        
-        const data = await response.json().catch(() => ({ mensaje: "Error al procesar respuesta" }));
-        
-        if (data.mensaje === 'Salón agregado correctamente' || 
-            data.mensaje === 'Salón actualizado correctamente') {
-            
+
+        const data = await response.json().catch(() => ({mensaje: "Error al procesar respuesta"}));
+
+        if (data.mensaje === 'Salón agregado correctamente' ||
+                data.mensaje === 'Salón actualizado correctamente') {
+
             Swal.fire({
                 icon: 'success',
                 title: 'Éxito',
@@ -254,10 +275,10 @@ window.guardarSalon = async () => {
                 timer: 1500,
                 showConfirmButton: false
             });
-            
+
             const modal = bootstrap.Modal.getInstance(document.getElementById('modalSalon'));
             modal.hide();
-            
+
             await cargarSalones();
         } else {
             Swal.fire({
@@ -266,7 +287,7 @@ window.guardarSalon = async () => {
                 text: data.mensaje
             });
         }
-        
+
     } catch (error) {
         console.error('Error:', error);
         Swal.fire({
@@ -288,17 +309,17 @@ window.eliminarSalon = async (id) => {
         confirmButtonText: 'Sí, eliminar',
         cancelButtonText: 'Cancelar'
     });
-    
+
     if (result.isConfirmed) {
         try {
             const response = await fetch(`${API_URL}/salones/eliminar`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ idSalon: id })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({idSalon: id})
             });
-            
+
             const data = await response.json();
-            
+
             if (data.mensaje === 'Salón eliminado correctamente') {
                 Swal.fire({
                     icon: 'success',
@@ -315,7 +336,7 @@ window.eliminarSalon = async (id) => {
                     text: data.mensaje
                 });
             }
-            
+
         } catch (error) {
             console.error('Error:', error);
             Swal.fire({
@@ -331,15 +352,15 @@ window.verDetalleSalon = async (idSalon) => {
     try {
         const modal = new bootstrap.Modal(document.getElementById('modalDetalleSalon'));
         modal.show();
-        
+
         const response = await fetch(`${API_URL}/salones/detalle/${idSalon}`);
         const data = await response.json();
-        
+
         let html = '';
-        
+
         if (data.length > 0) {
             const salon = data[0];
-            
+
             html = `
                 <div class="row">
                     <div class="col-md-6">
@@ -387,7 +408,7 @@ window.verDetalleSalon = async (idSalon) => {
                                 </thead>
                                 <tbody>
             `;
-            
+
             data.forEach(item => {
                 if (item.tipoMobiliario) {
                     html += `
@@ -400,11 +421,11 @@ window.verDetalleSalon = async (idSalon) => {
                     `;
                 }
             });
-            
+
             const totalGeneral = data.reduce((sum, item) => sum + (item.totalMobiliario || 0), 0);
             const totalDisponible = data.reduce((sum, item) => sum + (item.disponibles || 0), 0);
             const totalEnUso = data.reduce((sum, item) => sum + (item.enUso || 0), 0);
-            
+
             html += `
                                 </tbody>
                                 <tfoot class="table-light">
@@ -423,9 +444,9 @@ window.verDetalleSalon = async (idSalon) => {
         } else {
             html = '<div class="alert alert-warning">No se encontraron detalles para este salón</div>';
         }
-        
+
         document.getElementById('modalDetalleBody').innerHTML = html;
-        
+
     } catch (error) {
         console.error('Error:', error);
         document.getElementById('modalDetalleBody').innerHTML = `
@@ -438,13 +459,15 @@ window.verDetalleSalon = async (idSalon) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarSalones();
-    
+
     document.getElementById('btnFiltrar').addEventListener('click', aplicarFiltros);
     const nombre = localStorage.getItem("nombre_usuario") || "Usuario";
     const rolRaw = localStorage.getItem("id_rol") || "Invitado";
-    
-    if (document.getElementById('userNameDisplay')) document.getElementById('userNameDisplay').textContent = nombre;
-    if (document.getElementById('userRoleDisplay')) document.getElementById('userRoleDisplay').textContent = rolRaw;
+
+    if (document.getElementById('userNameDisplay'))
+        document.getElementById('userNameDisplay').textContent = nombre;
+    if (document.getElementById('userRoleDisplay'))
+        document.getElementById('userRoleDisplay').textContent = rolRaw;
 });
 
 window.cerrarSesion = () => {
