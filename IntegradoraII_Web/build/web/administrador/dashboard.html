@@ -46,6 +46,7 @@
                     </div>
                 </div>
 
+
                 <div class="d-flex align-items-center gap-3 ms-auto">
                 <div class="text-end d-none d-md-block">
                     <p class="mb-0 fw-semibold small text-truncate" id="userNameDisplay">Usuario</p>
@@ -63,14 +64,15 @@
                     <a class="nav-link" href="inventario.html">
                         <i class="bi bi-box-seam-fill"></i> Inventario
                     </a>
-                     <a class="nav-link" href="prestamos.html"><i class="bi bi-collection-fill"></i> Prestamos</a>
+                     <a class="nav-link" href="prestamos.html">
+                         <i class="bi bi-collection-fill"></i> Prestamos</a>
                     <a class="nav-link" href="reservaciones.html">
                         <i class="bi bi-calendar-event-fill"></i> Reservaciones
                     </a>
                     <a class="nav-link" href="reportes.html">
                         <i class="bi bi-file-earmark-text-fill"></i> Reportes
                     </a>
-                    <a class="nav-link" href="reservaciones.html">
+                    <a class="nav-link" href="salones.html">
                         <i class="bi bi-door-open-fill"></i> Salones
                     </a>
                     <a class="nav-link" href="usuarios.html">
@@ -99,6 +101,19 @@
                         </div>
                     </div>
 
+                    
+                      <div class="col-sm-6 col-lg-3 d-flex">
+                        <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
+                            <p class=" text-secondary small fw-semibold mb-1">
+                                Reportes Semanales
+                            </p>
+                            <h3 class="fw-bold mb-0 mt-auto text-orange d-flex justify-content-between align-items-center">
+                                <span id = 'total-reportes' ></span>
+                                <i class="fas fa-file-alt fs-5"></i>
+                            </h3>
+                        </div>
+                    </div>
+                    
 
                     <div class="col-sm-6 col-lg-3 d-flex">
                         <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
@@ -114,17 +129,7 @@
 
 
 
-                    <div class="col-sm-6 col-lg-3 d-flex">
-                        <div class="bg-white p-3 rounded-3 border d-flex flex-column h-100 w-100">
-                            <p class=" text-secondary small fw-semibold mb-1">
-                                Reportes Generados
-                            </p>
-                            <h3 class="fw-bold mb-0 mt-auto text-orange d-flex justify-content-between align-items-center">
-                                <span id = 'total-reportes' ></span>
-                                <i class="fas fa-file-alt fs-5"></i>
-                            </h3>
-                        </div>
-                    </div>
+                  
 
 
                     <div class="col-sm-6 col-lg-3 d-flex">
@@ -158,68 +163,89 @@
 
 
                 <div class="container-fluid p-4 bg-light">
-
-                    <h4 class="text-secondary font-weight-bold mb-4">Accesos Rápidos</h4>
-
-                    <div class="row g-3">
-
-                        <div class="col-md-6 mb-3">
-                            <a href="inventario.html" class="card-acceso card border-0 shadow-sm text-decoration-none p-1">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-box bg-success-light text-success rounded-circle me-3">
-                                            <i class="fas fa-cube"></i>
-                                        </div>
-                                        <span class="font-weight-bold text-dark">Inventario</span>
-                                    </div>
-                                </div>
-                            </a>
+    <h4 class="text-secondary font-weight-bold mb-4">Accesos Rápidos</h4>
+    <div class="row g-3">
+        
+        <div class="col-md-4 mb-3">
+            <a href="inventario.html" class="card-acceso card border-0 shadow-sm text-decoration-none p-1">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-success-light text-success rounded-circle me-3">
+                            <i class="fas fa-cube"></i>
                         </div>
-
-                        <div class="col-md-6 mb-3">
-                            <a href="reservaciones.html" class="card-acceso card border-0 shadow-sm text-decoration-none p-1">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-box bg-purple-light text-purple rounded-circle me-3">
-                                            <i class="far fa-calendar-alt "></i>
-                                        </div>
-                                        <span class="font-weight-bold text-dark">Reservaciones</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <a href="reportes.html" class="card-acceso card border-0 shadow-sm text-decoration-none p-1">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-box bg-orange-light text-orange rounded-circle me-3">
-                                            <i class="fas fa-file-alt"></i>
-                                        </div>
-                                        <span class="font-weight-bold text-dark">Reportes</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <a href="salones.html" class="card-acceso card border-0 shadow-sm text-decoration-none p-1">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-box bg-pink-light text-pink rounded-circle me-3">
-                                            <i class="fas fa-door-open"></i>
-                                        </div>
-
-                                        <span class="font-weight-bold text-dark">Salones</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
+                        <span class="font-weight-bold text-dark">Inventario</span>
                     </div>
                 </div>
+            </a>
+        </div>
 
+        <div class="col-md-4 mb-3">
+            <a href="reservaciones.html" class="card-acceso card border-0 shadow-sm text-decoration-none p-1">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-info-light text-info rounded-circle me-3">
+                            <i class="far fa-calendar-alt"></i>
+                        </div>
+                        <span class="font-weight-bold text-dark">Reservaciones</span>
+                    </div>
+                </div>
+            </a>
+        </div>
 
+        <div class="col-md-4 mb-3">
+            <a href="salones.html" class="card-acceso card border-0 shadow-sm text-decoration-none p-1">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-primary-light text-primary rounded-circle me-3">
+                            <i class="fas fa-door-open"></i>
+                        </div>
+                        <span class="font-weight-bold text-dark">Salones</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="prestamos.html" class="card-acceso card border-0 shadow-sm text-decoration-none p-1">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-warning-light text-warning rounded-circle me-3">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <span class="font-weight-bold text-dark">Préstamos</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="reportes.html" class="card-acceso card border-0 shadow-sm text-decoration-none p-1">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-orange-light text-orange rounded-circle me-3">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <span class="font-weight-bold text-dark">Reportes</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="usuarios.html" class="card-acceso card border-0 shadow-sm text-decoration-none p-1">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-purple-light text-purple rounded-circle me-3">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <span class="font-weight-bold text-dark">Usuarios</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
 
 
 
