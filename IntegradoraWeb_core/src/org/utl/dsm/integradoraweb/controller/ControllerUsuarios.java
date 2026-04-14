@@ -166,26 +166,15 @@ public class ControllerUsuarios {
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "465");
-
-        // Agrega estas propiedades exactas para forzar el túnel SSL
-        props.put("mail.smtp.ssl.protocols", "TLSv1.2"); // Forzar protocolo seguro
-        props.put("mail.smtp.ssl.checkserveridentity", "true");
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.socketFactory.fallback", "false");
-
-// ESTO FUERZA LA CONEXIÓN SSL PARA EVITAR EL TIMEOUT
-        props.put("mail.smtp.ssl.enable", "true");
-        props.put("mail.smtp.socketFactory.port", "465");
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.socketFactory.fallback", "false");
-
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
         Session session = Session.getInstance(props, new jakarta.mail.Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                // USA TU CONTRASEÑA DE APLICACIÓN AQUÍ
-                return new PasswordAuthentication("tu_correo@gmail.com", "tu_clave_de_16_letras");
+                return new PasswordAuthentication(correoOrigen, contraseniaApp);
             }
         });
 
@@ -197,15 +186,49 @@ public class ControllerUsuarios {
 
             String enlace = "https://proyecto-integradora-production-f92d.up.railway.app/index.html?correo=" + correoDestino + "&reset=true";
 
-            String html = "<div style='font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;'>"
-                    + "<h2 style='color: #2a2155; text-align: center;'>Gestion UTL</h2>"
-                    + "<p style='font-size: 16px; color: #333;'>Hemos recibido una solicitud para restablecer la contrasena de tu cuenta.</p>"
-                    + "<p style='font-size: 16px; color: #333;'>Haz clic en el boton de abajo para crear una nueva contrasena:</p>"
-                    + "<div style='text-align: center; margin: 30px 0;'>"
-                    + "<a href='" + enlace + "' style='background-color: #2a2155; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;'>Restablecer mi Contrasena</a>"
-                    + "</div>"
-                    + "<p style='font-size: 14px; color: #777;'>Si tu no solicitaste este cambio, puedes ignorar este correo de forma segura.</p>"
-                    + "</div>";
+            String html = "<div style='background-color: #f4f7f9; padding: 40px 20px; font-family: \"Segoe UI\", Tahoma, Geneva, Verdana, sans-serif;'>"
+    + "<div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e1e8ed;'>"
+    
+    // --- CABECERA ---
+    + "<div style='background-color: #2a2155; padding: 30px; text-align: center;'>"
+    + "<h1 style='color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 1px;'>Gestión UTL</h1>"
+    + "</div>"
+    
+    // --- CUERPO ---
+    + "<div style='padding: 40px; text-align: center;'>"
+    // Icono decorativo (Llave)
+    + "<div style='margin-bottom: 25px;'>"
+    + "<img src='https://cdn-icons-png.flaticon.com/512/6195/6195696.png' width='70' alt='Seguridad' style='display: block; margin: 0 auto;'>"
+    + "</div>"
+    
+    + "<h2 style='color: #1a1a1a; margin-top: 0; font-size: 22px;'>Restablecer Contraseña</h2>"
+    + "<p style='font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 10px;'>"
+    + "Hola, recibimos una solicitud para restablecer la contraseña de tu cuenta académica."
+    + "</p>"
+    + "<p style='font-size: 16px; color: #555; margin-bottom: 35px;'>"
+    + "Haz clic en el siguiente botón para crear una nueva clave de acceso:"
+    + "</p>"
+    
+    // --- BOTÓN ---
+    + "<a href='" + enlace + "' style='background-color: #2a2155; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 10px rgba(42, 33, 85, 0.25);'>"
+    + "Crear Nueva Contraseña"
+    + "</a>"
+    
+    // --- NOTA DE PIE ---
+    + "<div style='margin-top: 40px; padding-top: 25px; border-top: 1px solid #eeeeee;'>"
+    + "<p style='font-size: 13px; color: #999; line-height: 1.4; margin: 0;'>"
+    + "Si tú no solicitaste este cambio, puedes ignorar este correo de forma segura. El enlace tiene un tiempo de expiración limitado."
+    + "</p>"
+    + "</div>"
+    + "</div>"
+    
+    // --- FOOTER EXTERNO ---
+    + "<div style='padding: 20px; text-align: center;'>"
+    + "<p style='font-size: 12px; color: #adb5bd; margin: 0;'>&copy; 2026 Universidad Tecnológica de León<br>Departamento de Sistemas</p>"
+    + "</div>"
+    
+    + "</div>"
+    + "</div>";
 
             message.setContent(html, "text/html; charset=utf-8");
             Transport.send(message);
