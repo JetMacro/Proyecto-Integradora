@@ -138,13 +138,104 @@ function aplicarFiltros() {
     actualizarResumen(activos, inactivos, eliminados, usuariosFiltrados.length);
 }
 
-// ------------------- MODALES -------------------
+// ==========================================
+// FUNCIÓN PARA LIMPIAR BORDES ROJOS
+// ==========================================
+function limpiarValidaciones() {
+    const campos = ['uNombre', 'uApPaterno', 'uApMaterno', 'uCorreo', 'uTelefono', 'uFechaNac', 'uDireccion', 'uMatricula', 'uRol', 'uTurno', 'uContrasenia'];
+    campos.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.classList.remove('is-invalid');
+    });
+}
 
+// ==========================================
+// NAVEGACIÓN DEL MODAL MULTIESTEP
+// ==========================================
+function irPaso1() {
+    document.getElementById('paso2').classList.add('d-none');
+    document.getElementById('paso1').classList.remove('d-none');
+    
+    document.getElementById('indicadorPaso2').classList.replace('text-primary', 'text-muted');
+    document.getElementById('indicadorPaso2').classList.remove('fw-bold');
+    document.getElementById('indicadorPaso2').innerHTML = '<i class="bi bi-2-circle"></i> Cuenta';
+    
+    document.getElementById('indicadorPaso1').classList.replace('text-muted', 'text-primary');
+    document.getElementById('indicadorPaso1').classList.add('fw-bold');
+    document.getElementById('indicadorPaso1').innerHTML = '<i class="bi bi-1-circle-fill"></i> Personales';
+}
+
+function irPaso2() {
+    limpiarValidaciones();
+    let camposConError = [];
+
+    // Recogemos y validamos los datos del Paso 1
+    const nombre = document.getElementById('uNombre').value.trim();
+    const apPaterno = document.getElementById('uApPaterno').value.trim();
+    const apMaterno = document.getElementById('uApMaterno').value.trim();
+    const correo = document.getElementById('uCorreo').value.trim();
+    const telefono = document.getElementById('uTelefono').value.trim();
+    const fechaNac = document.getElementById('uFechaNac').value;
+
+    // Campos obligatorios del Paso 1
+    if (!nombre) camposConError.push('uNombre');
+    if (!apPaterno) camposConError.push('uApPaterno');
+    if (!apMaterno) camposConError.push('uApMaterno');
+    if (!correo) camposConError.push('uCorreo');
+    if (!fechaNac) camposConError.push('uFechaNac');
+
+    // Nombres sin números
+    const regexLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    if (nombre && !regexLetras.test(nombre)) camposConError.push('uNombre');
+    if (apPaterno && !regexLetras.test(apPaterno)) camposConError.push('uApPaterno');
+    if (apMaterno && !regexLetras.test(apMaterno)) camposConError.push('uApMaterno');
+
+    // Formato de correo
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (correo && !regexCorreo.test(correo)) camposConError.push('uCorreo');
+
+    // Teléfono de 10 dígitos (si lo escribió)
+    const regexNumeros = /^\d{10}$/;
+    if (telefono && !regexNumeros.test(telefono)) camposConError.push('uTelefono');
+
+    // Edad 18-50
+    if (fechaNac) {
+        const nacimiento = new Date(fechaNac);
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        if (hoy.getMonth() - nacimiento.getMonth() < 0 || (hoy.getMonth() - nacimiento.getMonth() === 0 && hoy.getDate() < nacimiento.getDate())) { edad--; }
+        if (edad < 18 || edad > 50) camposConError.push('uFechaNac');
+    }
+
+    // Si hay errores, no avanzar
+    if (camposConError.length > 0) {
+        let camposUnicos = [...new Set(camposConError)]; 
+        camposUnicos.forEach(id => document.getElementById(id).classList.add('is-invalid'));
+        Swal.fire({ icon: 'warning', title: 'Campos incorrectos', text: 'Por favor, verifique que los campos marcados en rojo sean correctos.'});
+        return; 
+    }
+
+    // Si todo está bien, cambia al Paso 2
+    document.getElementById('paso1').classList.add('d-none');
+    document.getElementById('paso2').classList.remove('d-none');
+    
+    document.getElementById('indicadorPaso1').classList.replace('text-primary', 'text-muted');
+    document.getElementById('indicadorPaso1').classList.remove('fw-bold');
+    document.getElementById('indicadorPaso1').innerHTML = '<i class="bi bi-1-circle"></i> Personales';
+    
+    document.getElementById('indicadorPaso2').classList.replace('text-muted', 'text-primary');
+    document.getElementById('indicadorPaso2').classList.add('fw-bold');
+    document.getElementById('indicadorPaso2').innerHTML = '<i class="bi bi-2-circle-fill"></i> Cuenta';
+}
+
+// ------------------- MODALES -------------------
 window.abrirModalAgregar = () => {
     document.getElementById('formUsuario').reset();
     document.getElementById('usuarioId').value = '';
     
-    // Mostramos el campo de contraseña porque es nuevo
+    limpiarValidaciones(); 
+    irPaso1(); // Siempre inicia en el paso 1
+
     document.getElementById('divContrasenia').style.display = 'block';
     document.getElementById('uEstatus').value = 'Activo';
     
@@ -169,7 +260,9 @@ window.abrirModalEditar = (id) => {
         document.getElementById('uTurno').value = u.id_turno;
         document.getElementById('uEstatus').value = u.id_estatus;
         
-        // Ocultamos la contraseña porque no se actualiza por aquí
+        limpiarValidaciones();
+        irPaso1(); // Siempre inicia en el paso 1
+
         document.getElementById('divContrasenia').style.display = 'none';
         document.getElementById('uContrasenia').value = ''; 
         
@@ -213,56 +306,86 @@ window.verDetalleUsuario = (id) => {
     }
 };
 
-// ------------------- ACCIONES A BD -------------------
-
+// ------------------- ACCIONES A BD Y VALIDACIÓN FINAL -------------------
 window.guardarUsuario = async () => {
     try {
         const id = document.getElementById('usuarioId').value;
         const endpoint = id ? `${API_URL}/usuario/modificar` : `${API_URL}/usuario/insertar`;
         
-        // Validación básica
-        if (!document.getElementById('uNombre').value || !document.getElementById('uApPaterno').value ||
-            !document.getElementById('uCorreo').value || !document.getElementById('uMatricula').value || 
-            (!id && !document.getElementById('uContrasenia').value)) { // Pide contraseña solo si es nuevo
-            
-            Swal.fire({ icon: 'warning', title: 'Campos incompletos', text: 'Llene todos los campos con asterisco (*)' });
-            return;
+        // Recoger valores del Paso 2
+        const matricula = document.getElementById('uMatricula').value.trim();
+        const rol = document.getElementById('uRol').value;
+        const turno = document.getElementById('uTurno').value;
+        const estatus = document.getElementById('uEstatus').value;
+        const contrasenia = document.getElementById('uContrasenia').value.trim();
+
+        let camposConError = [];
+
+        // Validaciones del Paso 2
+        if (!matricula) camposConError.push('uMatricula');
+        if (!rol) camposConError.push('uRol');
+        if (!turno) camposConError.push('uTurno');
+        if (!id && !contrasenia) camposConError.push('uContrasenia');
+
+        // Mostrar alerta si hay errores en el Paso 2
+        if (camposConError.length > 0) {
+            let camposUnicos = [...new Set(camposConError)]; 
+            camposUnicos.forEach(idCampo => {
+                const elemento = document.getElementById(idCampo);
+                if (elemento) elemento.classList.add('is-invalid');
+            });
+            Swal.fire({ 
+                icon: 'warning', 
+                title: 'Campos incorrectos', 
+                text: 'Por favor, verifique que los campos marcados en rojo sean correctos.'
+            });
+            return; 
         }
         
-        const userData = {
-            id_usuario: id ? parseInt(id) : 0,
-            nombre: document.getElementById('uNombre').value,
-            apellido_paterno: document.getElementById('uApPaterno').value,
-            apellido_materno: document.getElementById('uApMaterno').value,
-            correo: document.getElementById('uCorreo').value,
-            telefono: document.getElementById('uTelefono').value,
+        // Armamos los datos en formato JSON recogiendo ambos pasos
+        const bodyData = {
+            nombre: document.getElementById('uNombre').value.trim(),
+            apellido_paterno: document.getElementById('uApPaterno').value.trim(),
+            apellido_materno: document.getElementById('uApMaterno').value.trim(),
+            correo: document.getElementById('uCorreo').value.trim(),
+            telefono: document.getElementById('uTelefono').value.trim(),
             fecha_nacimiento: document.getElementById('uFechaNac').value,
-            direccion: document.getElementById('uDireccion').value,
-            matricula: document.getElementById('uMatricula').value,
-            contrasenia: document.getElementById('uContrasenia').value, // El backend debe hashearla
-            id_rol: document.getElementById('uRol').value,
-            id_turno: document.getElementById('uTurno').value,
-            id_estatus: document.getElementById('uEstatus').value
+            direccion: document.getElementById('uDireccion').value.trim(),
+            matricula: matricula,
+            id_rol: rol,
+            id_turno: turno,
+            id_estatus: estatus
         };
-        
+
+        if (id) {
+            bodyData.id_usuario = parseInt(id);
+        } else {
+            bodyData.contrasenia = contrasenia;
+        }
+
+        // Mandamos la petición al servidor
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
+            body: JSON.stringify(bodyData)
         });
         
-        const data = await response.json().catch(() => ({ error: "Error en la respuesta del servidor" }));
+        const textData = await response.text();
+        const data = textData ? JSON.parse(textData) : {};
         
         if (response.ok) {
             Swal.fire({ icon: 'success', title: 'Éxito', text: data.mensaje || 'Operación exitosa', timer: 1500, showConfirmButton: false });
-            bootstrap.Modal.getInstance(document.getElementById('modalUsuario')).hide();
+            
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalUsuario')).hide();
+            
             await cargarUsuarios();
         } else {
             Swal.fire({ icon: 'error', title: 'Error', text: data.error || 'No se pudo guardar' });
         }
         
     } catch (error) {
-        Swal.fire({ icon: 'error', title: 'Error', text: 'Error de red al guardar' });
+        console.error("Error al guardar:", error);
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Error de red al procesar la solicitud' });
     }
 };
 
@@ -280,7 +403,6 @@ window.eliminarUsuario = async (id) => {
     
     if (result.isConfirmed) {
         try {
-            // Como tu Java recibe @FormParam, enviamos URLSearchParams
             const params = new URLSearchParams();
             params.append('id_usuario', id);
 
@@ -290,7 +412,8 @@ window.eliminarUsuario = async (id) => {
                 body: params
             });
             
-            const data = await response.json();
+            const textData = await response.text();
+            const data = textData ? JSON.parse(textData) : {};
             
             if (response.ok) {
                 Swal.fire({ icon: 'success', title: 'Eliminado', text: 'El usuario fue dado de baja', timer: 1500, showConfirmButton: false });
@@ -318,5 +441,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.cerrarSesion = () => {
     localStorage.clear();
-    window.location.href = window.location.origin + "/index.html";
+    window.location.href = "../index.html";
 };

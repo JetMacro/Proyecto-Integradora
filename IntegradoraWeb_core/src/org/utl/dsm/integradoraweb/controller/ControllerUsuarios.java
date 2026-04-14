@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.security.MessageDigest;
+import java.nio.charset.StandardCharsets;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
@@ -19,6 +21,21 @@ import jakarta.mail.internet.MimeMessage;
 
 public class ControllerUsuarios {
 
+    // ==========================================
+    // MÉTODO HASH SHA-256 (De tu compañero)
+    // ==========================================
+    private String hashSHA256(String input) throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
+
     public Usuarios login(String usuario, String contrasenia) throws SQLException {
         String sql = "{CALL sp_login_usuario(?, ?)}";
         ConexionMySQL connMySQL = new ConexionMySQL();
@@ -26,6 +43,7 @@ public class ControllerUsuarios {
         CallableStatement cstmt = conn.prepareCall(sql);
 
         cstmt.setString(1, usuario);
+        // Aquí no se encripta en Java porque sp_login_usuario ya hace el SHA2 internamente
         cstmt.setString(2, contrasenia);
 
         ResultSet rs = cstmt.executeQuery();
@@ -43,7 +61,7 @@ public class ControllerUsuarios {
                 u.setApellido_paterno(rs.getString("apellido_paterno"));
                 u.setApellido_materno(rs.getString("apellido_materno"));
 
-                //agregado token
+                // agregado token
                 u.setToken(rs.getString("token"));
                 u.setLast_used_token(rs.getString("last_used_token"));
             }
@@ -65,10 +83,17 @@ public class ControllerUsuarios {
             cstmt.setString(3, u.getApellido_materno());
             cstmt.setString(4, u.getCorreo());
             cstmt.setString(5, u.getTelefono());
-            cstmt.setDate(6, java.sql.Date.valueOf(u.getFecha_nacimiento()));
+
+            // Validación de fecha de tu compañero
+            if (u.getFecha_nacimiento() != null && !u.getFecha_nacimiento().trim().isEmpty()) {
+                cstmt.setDate(6, java.sql.Date.valueOf(u.getFecha_nacimiento()));
+            } else {
+                cstmt.setNull(6, java.sql.Types.DATE);
+            }
+
             cstmt.setString(7, u.getDireccion());
             cstmt.setString(8, u.getMatricula());
-            cstmt.setString(9, u.getContrasenia());
+            cstmt.setString(9, hashSHA256(u.getContrasenia())); // Hash aplicado aquí
             cstmt.setString(10, u.getId_rol());
             cstmt.setString(11, u.getId_turno());
             cstmt.executeUpdate();
@@ -89,7 +114,14 @@ public class ControllerUsuarios {
             cstmt.setString(4, u.getApellido_materno());
             cstmt.setString(5, u.getCorreo());
             cstmt.setString(6, u.getTelefono());
-            cstmt.setDate(7, java.sql.Date.valueOf(u.getFecha_nacimiento()));
+
+            // Validación de fecha de tu compañero
+            if (u.getFecha_nacimiento() != null && !u.getFecha_nacimiento().trim().isEmpty()) {
+                cstmt.setDate(7, java.sql.Date.valueOf(u.getFecha_nacimiento()));
+            } else {
+                cstmt.setNull(7, java.sql.Types.DATE);
+            }
+
             cstmt.setString(8, u.getDireccion());
             cstmt.setString(9, u.getId_rol());
             cstmt.setString(10, u.getId_turno());
@@ -143,9 +175,6 @@ public class ControllerUsuarios {
         }
     }
 
-    // ==========================================
-    // Metodos para Recuperacion y Cambio de Contrasena
-    // ==========================================
     public void actualizarPassword(String correo, String nuevaContrasenia) throws Exception {
         String query = "{CALL sp_ActualizarPassword(?, ?)}";
         ConexionMySQL connMySQL = new ConexionMySQL();
@@ -153,13 +182,16 @@ public class ControllerUsuarios {
 
         try (CallableStatement cstmt = conn.prepareCall(query)) {
             cstmt.setString(1, correo);
-            cstmt.setString(2, nuevaContrasenia);
+            cstmt.setString(2, hashSHA256(nuevaContrasenia)); // Hash aplicado aquí
             cstmt.executeUpdate();
         } finally {
             conn.close();
         }
     }
 
+    // ==========================================
+    // ENVIAR CORREO (100% TU CÓDIGO Y TU DISEÑO DE RAILWAY)
+    // ==========================================
     public void enviarCorreoRecuperacion(String correoDestino) throws Exception {
         final String correoOrigen = "yoqzan25@gmail.com";
         final String contraseniaApp = "ujrroquepkrtmsib";

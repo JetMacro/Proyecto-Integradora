@@ -28,7 +28,7 @@ public class RESTUsuarios {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(Usuarios ul) {
 
-        // --- INICIO DE LA CORRECCIÓN ---
+        // --- INICIO DE LA CORRECCIÓN (Tu versión original) ---
         // Este "chismoso" imprimirá en la consola de NetBeans lo que llega desde tu página web
         System.out.println("LLEGÓ A JAVA -> Matrícula: " + ul.getMatricula() + " | Pass: " + ul.getContrasenia());
         // --- FIN DE LA CORRECCIÓN ---
@@ -58,6 +58,7 @@ public class RESTUsuarios {
     // ==========================================
     // MÉTODOS DE GESTIÓN DE USUARIOS
     // ==========================================
+    
     @GET
     @Path("getAll")
     @Produces(MediaType.APPLICATION_JSON)
@@ -82,8 +83,12 @@ public class RESTUsuarios {
     @Path("insertar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertar(Usuarios u) {
+    public Response insertar(String jsonString) { // Corrección del compañero: Recibir String crudo
         try {
+            // Convertir el JSON a Objeto manualmente
+            Gson gson = new Gson();
+            Usuarios u = gson.fromJson(jsonString, Usuarios.class);
+
             ControllerUsuarios ctrl = new ControllerUsuarios();
             ctrl.insertar(u);
 
@@ -94,7 +99,8 @@ public class RESTUsuarios {
         } catch (Exception e) {
             e.printStackTrace();
             JsonObject error = new JsonObject();
-            error.addProperty("error", "Error al registrar el usuario.");
+            // Mantener detalle del error del compañero
+            error.addProperty("error", "Error al registrar el usuario: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error.toString()).build();
         }
     }
@@ -103,8 +109,11 @@ public class RESTUsuarios {
     @Path("modificar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response modificar(Usuarios u) {
+    public Response modificar(String jsonString) { // Corrección del compañero: Recibir String crudo
         try {
+            Gson gson = new Gson();
+            Usuarios u = gson.fromJson(jsonString, Usuarios.class);
+
             ControllerUsuarios ctrl = new ControllerUsuarios();
             ctrl.modificar(u);
 
@@ -115,11 +124,11 @@ public class RESTUsuarios {
         } catch (Exception e) {
             e.printStackTrace();
             JsonObject error = new JsonObject();
-            error.addProperty("error", "Error al modificar el usuario.");
+            error.addProperty("error", "Error al modificar el usuario: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error.toString()).build();
         }
     }
-
+    
     @POST
     @Path("eliminar")
     @Produces(MediaType.APPLICATION_JSON)
@@ -143,6 +152,7 @@ public class RESTUsuarios {
     // ==========================================
     // MÉTODOS PARA RECUPERACIÓN DE CONTRASEÑA
     // ==========================================
+
     @POST
     @Path("solicitarRecuperacion")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -151,13 +161,14 @@ public class RESTUsuarios {
         try {
             ControllerUsuarios ctrl = new ControllerUsuarios();
             ctrl.enviarCorreoRecuperacion(u.getCorreo());
-
+            
             JsonObject respuesta = new JsonObject();
             respuesta.addProperty("mensaje", "Correo de recuperación enviado exitosamente.");
             return Response.status(Response.Status.OK).entity(respuesta.toString()).build();
-
+            
         } catch (Exception e) {
-            e.printStackTrace(); // Esto hará que el error real aparezca en los logs de Railway
+            e.printStackTrace(); 
+            // Conservado de TU versión para que puedas ver el error exacto en los logs de Railway
             return Response.status(500).entity("{\"error\":\"" + e.toString() + "\"}").build();
         }
     }
@@ -170,11 +181,11 @@ public class RESTUsuarios {
         try {
             ControllerUsuarios ctrl = new ControllerUsuarios();
             ctrl.actualizarPassword(u.getCorreo(), u.getContrasenia());
-
+            
             JsonObject respuesta = new JsonObject();
             respuesta.addProperty("mensaje", "Contraseña actualizada correctamente.");
             return Response.status(Response.Status.OK).entity(respuesta.toString()).build();
-
+            
         } catch (Exception e) {
             e.printStackTrace();
             JsonObject error = new JsonObject();

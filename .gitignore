@@ -22,3 +22,11 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+/IntegradoraII_Web/build/
+/IntegradoraII_Web/dist/
+/IntegradoraWeb_core/build/
+/IntegradoraWeb_model/build/
+/IntegradoraII_Web/nbproject/private/
+/IntegradoraWeb_core/nbproject/private/
+/IntegradoraWeb_model/dist/
+/IntegradoraWeb_core/dist/

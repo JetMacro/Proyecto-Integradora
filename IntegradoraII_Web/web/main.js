@@ -1,16 +1,50 @@
 /**
  * Archivo: main.js
- * Controlador de autenticacion de sesion
+ * Controlador de autenticación de sesión y UI unificado
  */
+
+// Redirección centralizada (Mantenemos tu versión segura)
+const LOGIN_PAGE = window.location.origin + "/index.html";
+
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Rutas Locales
-    const API_LOGIN = "/api/usuario/login";
+    // ==========================================
+    // 1. LÓGICA DE INTERFAZ (Menú y Navegación de tu compañero)
+    // ==========================================
+    const toggleButton = document.getElementById("menu-toggle");
+    const body = document.body;
+
+    // Funcionalidad del menú de hamburguesa
+    if (toggleButton) {
+        toggleButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            body.classList.toggle("sb-hidden");
+        });
+    }
+
+    // Marcar el enlace activo en la barra de navegación
+    let currentPath = window.location.pathname.split("/").pop() || "index.html";
+    currentPath = currentPath.split("?")[0]; 
+
+    const links = document.querySelectorAll(".nav-link");
+    
+    links.forEach(link => link.classList.remove("active"));
+    links.forEach((link) => {
+        const href = link.getAttribute("href");
+        if (href && href.split("?")[0] === currentPath) {
+            link.classList.add("active");
+        }
+    });
+
+    // ==========================================
+    // 2. LÓGICA DE AUTENTICACIÓN (Tu versión de Railway)
+    // ==========================================
+    const API_LOGIN = "/api/usuario/login"; // Mantenemos ruta relativa para Railway
     const DASHBOARD_URL = "administrador/dashboard.html";
 
-    const form = document.getElementById("form-login");
-    if (!form)
-        return;
+    const form = document.getElementById("form-login"); 
+    
+    if (!form) return; // Si no hay formulario, detenemos aquí
 
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
@@ -22,11 +56,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const contrasenia = passwordInput.value.trim();
 
         if (!nombreUsuario || !contrasenia) {
-            Swal.fire('Atencion', 'Por favor, completa todos los campos.', 'warning');
+            Swal.fire('Atención', 'Por favor, completa todos los campos.', 'warning');
             return;
         }
 
-        Swal.fire({title: 'Autenticando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+        Swal.fire({
+            title: 'Autenticando...', 
+            allowOutsideClick: false, 
+            didOpen: () => Swal.showLoading()
+        });
 
         try {
             const response = await fetch(API_LOGIN, {
@@ -41,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) {
                 const errorTexto = await response.text();
                 console.error("Respuesta del servidor:", errorTexto);
-                Swal.fire('Error', 'Credenciales incorrectas o problema en el servidor.', 'error');
+                Swal.fire('Error', 'El servidor encontró un problema interno.', 'error');
                 return;
             }
 
@@ -50,17 +88,17 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 console.log("Usuario autenticado:", data);
 
-                // Guardado de variables de sesion
+                // Guardado de variables de sesión
                 localStorage.setItem("id_usuario", data.id_usuario);
                 localStorage.setItem("id_rol", data.id_rol);
                 localStorage.setItem("nombre_usuario", `${data.nombre} ${data.apellido_paterno}`);
                 localStorage.setItem("matricula", data.matricula);
 
-                // agregado token
+                // Agregado token de seguridad
                 const prefijo = data.matricula.trim().toUpperCase().substring(0, 3).replace("A", "@");
                 const tokenInicial = (prefijo + "-" + Date.now().toString()).padEnd(25, "X");
                 localStorage.setItem("sessionToken", tokenInicial);
-                // fin del agregado
+                
                 Swal.close();
                 window.location.href = DASHBOARD_URL;
             } else {
@@ -69,25 +107,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
             console.error("Error al conectarse al servidor:", error);
-            Swal.fire('Error de Conexion', 'No se pudo conectar al servidor.', 'error');
+            Swal.fire('Error de Conexión', 'No se pudo conectar al servidor.', 'error');
         }
     });
 });
 
-// redireccion centralizada 
-const LOGIN_PAGE = window.location.origin + "/index.html";
-
-
-// agregados token seguridad
+// ==========================================
+// 3. LÓGICA DE SEGURIDAD (Manejo de Sesión)
+// ==========================================
 
 function verificarSesion() {
     const path = window.location.pathname;
-    if (path.endsWith("index.html") || path.endsWith("/") || path === "")
-        return;
+    // Evitar verificar en el index/login
+    if (path.endsWith("index.html") || path.endsWith("/") || path === "") return;
 
     const token = localStorage.getItem("sessionToken");
     if (!token) {
-        window.location.href = LOGIN_PAGE;// cambio de la locacion
+        window.location.href = LOGIN_PAGE;
         return;
     }
 
@@ -114,24 +150,7 @@ function refrescarSesion() {
     }
 }
 
-const toggleButton = document.getElementById("menu-toggle");
-
-const body = document.body;
-
-
-
-if (toggleButton) {
-
-    toggleButton.addEventListener("click", (e) => {
-
-        e.preventDefault(); // Evita el comportamiento por defecto del enlace
-
-        body.classList.toggle("sb-hidden");
-
-    });
-
-}
-
+// Iniciar monitoreo de sesión
 window.addEventListener("load", verificarSesion);
 ["click", "mousemove", "keypress"].forEach(evt => {
     document.addEventListener(evt, refrescarSesion);
